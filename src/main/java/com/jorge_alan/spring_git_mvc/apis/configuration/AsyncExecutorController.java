@@ -2,7 +2,6 @@ package com.jorge_alan.spring_git_mvc.apis.configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.Executor;
 
 import org.springframework.context.annotation.Bean;
@@ -48,7 +47,7 @@ class InnerAsyncExecutorController {
     @Value("${spring.ssl.bundle.pem.server.keystore.private-key}")
     private String keyPath;
 
-    @Value("{spring.ssl.bundle.pem.server.keystore.password}")
+    @Value("${spring.ssl.bundle.pem.server.keystore.password}")
     private String passPath;
 
     @Bean
