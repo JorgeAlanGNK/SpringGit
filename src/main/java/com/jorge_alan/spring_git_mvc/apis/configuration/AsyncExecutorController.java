@@ -6,6 +6,7 @@ import java.util.concurrent.Executor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ssl.pem.PemContent;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 @EnableAsync
 @Configuration
@@ -52,25 +54,34 @@ class InnerAsyncExecutorController {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/apiGitSpring/login")
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/apiGitSpring/login")
                 .permitAll()
                 .anyRequest()
                 .authenticated())
-            .csrf(csrf -> 
-                csrf.disable());
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
-    
+
     @Bean
-    public PrivateKey ContenidoKey() throws IOException {
-        File keyFile = new File(keyPath);
-        PrivateKey privateKey = PemContent.load(keyFile.toPath()).getPrivateKey(passPath);
-        return privateKey;
+    @Lazy
+    public PrivateKey ContenidoKey() {
+        File keyFile = null;
+        PrivateKey privateKey = null;
+        try {
+            keyFile = new File(keyPath);
+            privateKey = PemContent.load(keyFile.toPath()).getPrivateKey(passPath);
+            return privateKey;
+        } catch (Exception e) {
+            throw new RuntimeException("Llave clave invalida");
+        }
+    }
+
+    @Bean
+    @Lazy
+    public Argon2PasswordEncoder passwordEncoder() {
+        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
     }
 }
-
 
 @Component
 class FiltroPeticion extends OncePerRequestFilter {
@@ -78,7 +89,7 @@ class FiltroPeticion extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
+
         filterChain.doFilter(request, response);
     }
 

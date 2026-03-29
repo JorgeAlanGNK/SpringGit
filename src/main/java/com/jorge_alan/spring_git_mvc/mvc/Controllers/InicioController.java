@@ -1,4 +1,4 @@
-package com.jorge_alan.spring_git_mvc.controladores;
+package com.jorge_alan.spring_git_mvc.mvc.Controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.jorge_alan.spring_git_mvc.apis;
+package com.jorge_alan.spring_git_mvc.apis.Controllers;
 
 import java.util.concurrent.CompletableFuture;
 
