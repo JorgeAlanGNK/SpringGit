@@ -20,13 +20,10 @@ public final class EventosStruct {
 
         public void CollapseBranch(ActionEvent e, JPanel actual, EstructuraPanel modelPanel) {
             modelPanel.setEsVisible(!modelPanel.isEsVisible());
-            GridLayout grid = (GridLayout) actual.getLayout();
             JPanel collapse = modelPanel.getActualCollapse();
             if(modelPanel.isEsVisible()) {
-                grid.setRows(2);
                 actual.add(collapse);
             } else {
-                grid.setRows(1);
                 actual.remove(collapse);
             }
             actual.revalidate();
