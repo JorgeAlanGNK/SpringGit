@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -15,15 +14,21 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.componentes.events.EventosStruct.PrincipalEvento;
+import com.jorge_alan.spring_git_mvc.datos.CapaDatos.GitVisualizacion;
 
 import java.util.List;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.EstructuraPanel;
+import com.jorge_alan.spring_git_mvc.negocios.CapaNegocio.BuilderNegocio;
+import com.jorge_alan.spring_git_mvc.negocios.CapaNegocio.IBuilderNegocio;
 import com.kitfox.svg.app.beans.SVGIcon;
 
 import lombok.AllArgsConstructor;
@@ -41,11 +46,20 @@ public final class Principal {
         @Getter
         @Setter
         private List<EstructuraPanel> paneles;
+        @Getter
+        @Setter
+        private List<String> rutasFisicasGitLocal = Lists.newArrayList();
+        @Getter @Setter
+        private String rutaActual;
+
+        private boolean validarOperaciones;
 
         private static final String BUSCAR_CONST = "buscar...";
         private static final String EMPTY_STRING = Strings.nullToEmpty("");
 
         private static final PrincipalEvento _eventosPrincipal = IniciarEventos();
+        private static final IBuilderNegocio _llamadasGit = llamadasGit();
+        private static final ConstruccionNavegador _menuBar = InicioNavegador();
 
         private static PrincipalEvento IniciarEventos() {
             if (_eventosPrincipal == null) {
@@ -54,8 +68,31 @@ public final class Principal {
             return _eventosPrincipal;
         }
 
+        private static IBuilderNegocio llamadasGit() {
+            if (_llamadasGit == null) {
+                return new BuilderNegocio(new GitVisualizacion());
+            }
+            return _llamadasGit;
+        }
+
+        private static ConstruccionNavegador InicioNavegador() {
+            if (_menuBar == null) {
+                return new ConstruccionNavegador();
+            }
+            return _menuBar;
+        }
+
         @Override
         public void Builder() {
+            if (!_menuBar.ComprobacionGITVersion()) {
+                String mensaje = "Esta aplicación requiere forzosamente instalada la extensión GIT\\n"
+                + "favor de buscar la siguiente URL https://git-scm.com/install/";
+                JOptionPane.showMessageDialog(initClass, mensaje, "Instalador Git no instalado", JOptionPane.INFORMATION_MESSAGE);
+                validarOperaciones = false;
+            } else {
+                validarOperaciones = true;
+            }
+            _menuBar.InicializarMenu(initClass, validarOperaciones);
             GridBagLayout grid = new GridBagLayout();
             GridBagConstraints grBag = new GridBagConstraints();
             Color red = new Color(255, 0, 0);
@@ -80,6 +117,10 @@ public final class Principal {
             grBag.fill = GridBagConstraints.BOTH;
             layoutContenido(contenido);
             this.initClass.add(contenido, grBag);
+            if (validarOperaciones) {
+                this.rutasFisicasGitLocal.add(_menuBar.RutaFisica(initClass));
+                this.rutaActual = this.rutasFisicasGitLocal.get(0);
+            }
         }
 
         private void layoutBarra(final JPanel componente) {
@@ -98,10 +139,10 @@ public final class Principal {
             this.paneles.add(new EstructuraPanel("seccionRama", ramas, false));
             this.paneles.add(new EstructuraPanel("stashes", stashes, false));
             this.paneles.add(new EstructuraPanel("remotos", remotos, false));
-            //Faltaba el panel a Generar
+            // Faltaba el panel a Generar
             this.paneles.add(new EstructuraPanel("seccionRama", ramaCollapse, false));
             this.paneles.add(new EstructuraPanel("stashes", stashCollapse, false));
-            this.paneles.add(new EstructuraPanel("stashes", remotosCollapse, false));
+            this.paneles.add(new EstructuraPanel("remotos", remotosCollapse, false));
             // va atraer el doble
             GridBagLayout grbly = new GridBagLayout();
             GridBagConstraints grbcs = new GridBagConstraints();
@@ -136,6 +177,8 @@ public final class Principal {
 
         }
 
+        
+
         private void AreaComponente(final JPanel panelActual, final JPanel areaFlow, LayoutManager managerLayout,
                 JTextField buscador,
                 String areaEtiqueta) {
@@ -152,6 +195,7 @@ public final class Principal {
                 icon_collapse_button.setPreferredSize(new Dimension(20, 20));
                 icon_collapse_button.setScaleToFit(true);
                 JButton btn_collapse_area = new JButton();
+                btn_collapse_area.setEnabled(validarOperaciones);
                 if (areaEtiqueta == "seccionRama") {
                     btn_collapse_area.addActionListener(new ActionListener() {
                         @Override
@@ -244,5 +288,7 @@ public final class Principal {
                 System.out.println(e.getLocalizedMessage());
             }
         }
+
+        
     }
 }
