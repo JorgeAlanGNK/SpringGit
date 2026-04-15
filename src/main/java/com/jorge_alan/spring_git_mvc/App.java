@@ -36,6 +36,7 @@ public class App extends JFrame {
         App.buildPanel = BuildLayoutGlass.builder()
                 .initClass(this)
                 .paneles(Lists.newArrayList())
+                .rutasFisicasGitLocal(Lists.newArrayList())
                 .build();
         buildPanel.Builder();
     }
