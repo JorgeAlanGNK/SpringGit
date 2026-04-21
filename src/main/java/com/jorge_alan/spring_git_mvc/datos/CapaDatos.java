@@ -227,10 +227,10 @@ public final class CapaDatos {
             try (BufferedReader temp = new BufferedReader(new InputStreamReader(start.getInputStream(), StandardCharsets.UTF_8))) {
                 String info = null;
                 while ((info = temp.readLine()) != null) {
-                    stb.append(info).append(System.lineSeparator());
+                    stb.append(info.trim()).append(System.lineSeparator());
                 }
             }
-            return stb.toString();
+            return stb.toString().trim();
         }
     }
 

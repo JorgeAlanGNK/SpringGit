@@ -68,6 +68,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
             return SeleccionRepositorioForm.builder()
                     .ramasResult(result.getRamas())
                     .stashesResult(result.getStashes())
+                    .remotosResult(result.getRemotos())
                     .build();
         }).thenAccept((v) -> {
             List<RamaModelo> ramas = v.getRamasResult();
