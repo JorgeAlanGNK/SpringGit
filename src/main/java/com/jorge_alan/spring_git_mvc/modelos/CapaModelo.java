@@ -1,8 +1,5 @@
 package com.jorge_alan.spring_git_mvc.modelos;
 
-import javax.swing.JPanel;
-
-import com.google.common.collect.Lists;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,6 +11,7 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CapaModelo {
@@ -28,36 +26,29 @@ public final class CapaModelo {
         public Map<String, List<String>> navegaciones;
     }
 
-    @Builder
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static final class EstructuraPanel {
-        @Getter
-        private String etiqueta;
-        @Getter
-        private JPanel actualCollapse;
-        @Getter @Setter private boolean esVisible;
-    }
-
+    //la nomenclatura modelo funciona para realizar operaciones JPanel
+    //falta realizar información detallada
     @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
     public static final class RamaModelo {
-        @Getter
-        @Setter
+        @Getter @Setter
         private String nombreRama;
-        @Getter
-        @Setter
-        private List<String> Carpeta;
-        @Getter
-        @Setter
+        @Getter @Setter
+        private List<String> carpetas;
+        
+        @Getter @Setter
         private boolean carpeta;
-        @Getter
-        @Setter
+        @Getter @Setter
         private boolean origin;
     }
 
     @NoArgsConstructor
-    public static class StashModelo {
-        @Getter
-        @Setter
-        private List<String> stashes;
+    @AllArgsConstructor
+    @ToString
+    public static final class StashModelo {
+        private String stash;
+        @Getter @Setter
+        private int indexStash;
     }
 }
