@@ -84,9 +84,9 @@ public final class CapaDatos {
         }
 
         @Override
-        public CompletableFuture<List<RamaModelo>> ObtenerRamas(String repositorio) {
-            CompletableFuture<List<RamaModelo>> taskInit = CompletableFuture.supplyAsync(() -> {
-                List<RamaModelo> ramaModelo = Lists.newArrayList();
+        public CompletableFuture<Set<RamaModelo>> ObtenerRamas(String repositorio) {
+            CompletableFuture<Set<RamaModelo>> taskInit = CompletableFuture.supplyAsync(() -> {
+                Set<RamaModelo> ramaModelo = Sets.newHashSet();
                 try {
                     Path carpeta = Paths.get(repositorio);
                     if (!Files.isDirectory(carpeta)) {
@@ -207,7 +207,7 @@ public final class CapaDatos {
 
     public interface IGitVisualizacion {
 
-        CompletableFuture<List<RamaModelo>> ObtenerRamas(String repositorio);
+        CompletableFuture<Set<RamaModelo>> ObtenerRamas(String repositorio);
 
         CompletableFuture<List<StashModelo>> ObtenerStashes(String repositorio);
 

@@ -15,17 +15,14 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class VistasModelos {
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
     public static final class SeleccionRepositorioForm {
 
         //para frontend hacia el backend
-        private List<String> rutasRepositorios;
+        private Set<String> rutasRepositorios;
         private String rutaActual;
 
         //para backedn hacia el frontend
-        private List<RamaModelo> ramasResult;
+        private Set<RamaModelo> ramasResult;
         private List<StashModelo> stashesResult;
         private List<RamaModelo> remotosResult;
         private Set<RemotoModelo> remotosUrl;
@@ -34,11 +31,11 @@ public final class VistasModelos {
         //accionadores para activar y desactivar ciertas configuraciones
         private boolean activarDireccionUrl;
         
-        public List<String> getRutasRepositorios() {
+        public Set<String> getRutasRepositorios() {
             return rutasRepositorios;
         }
 
-        public void setRutasRepositorios(List<String> rutasRepositorios) {
+        public void setRutasRepositorios(Set<String> rutasRepositorios) {
             this.rutasRepositorios = rutasRepositorios;
         }
 
@@ -58,11 +55,11 @@ public final class VistasModelos {
             this.rutaActual = rutaActual;
         }
 
-        public List<RamaModelo> getRamasResult() {
+        public Set<RamaModelo> getRamasResult() {
             return ramasResult;
         }
 
-        public void setRamasResult(List<RamaModelo> ramasResult) {
+        public void setRamasResult(Set<RamaModelo> ramasResult) {
             this.ramasResult = ramasResult;
         }
 

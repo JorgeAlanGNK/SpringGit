@@ -60,19 +60,14 @@ public abstract class ActualizadorMenu {
         public CompletableFuture<SeleccionRepositorioForm> ObtenerTareaPrincipal(boolean hayRemoto) {
             if (Strings.isNullOrEmpty(super.getRepositorio())) {
                 return CompletableFuture.supplyAsync(() -> {
-                    SeleccionRepositorioForm repositorio = SeleccionRepositorioForm
-                            .builder()
-                            .ramasResult(Lists.newArrayList())
-                            .remotosResult(Lists.newArrayList())
-                            .stashesResult(Lists.newArrayList())
-                            .dtoResultado(
-                                    EstadoSituacion
-                                            .builder()
-                                            .enumResult(EstadoEnum.NOT_FOUND)
-                                            .mensaje("Repositorio no valido para la operacion")
-                                            .build()
-                            )
-                            .build();
+                    SeleccionRepositorioForm repositorio = new SeleccionRepositorioForm();
+                    EstadoSituacion dtoResultado = new EstadoSituacion();
+                    repositorio.setRamasResult(Sets.newHashSet());
+                    repositorio.setRemotosResult(Lists.newArrayList());
+                    repositorio.setStashesResult(Lists.newArrayList());
+                    repositorio.setDtoResultado(dtoResultado);
+                    dtoResultado.setEnumResult(EstadoEnum.NOT_FOUND);
+                    dtoResultado.setMensaje("Repositorio no valido para la operacion");
                     return repositorio;
                 });
             }
@@ -83,68 +78,57 @@ public abstract class ActualizadorMenu {
                 ResultadoTareas = CompletarSinRemoto();
             }
             return ResultadoTareas.exceptionally((error) -> {
-                SeleccionRepositorioForm resultado = SeleccionRepositorioForm
-                        .builder()
-                        .ramasResult(Lists.newArrayList())
-                        .remotosResult(Lists.newArrayList())
-                        .stashesResult(Lists.newArrayList())
-                        .remotosUrl(Sets.newHashSet())
-                        .dtoResultado(
-                                EstadoSituacion
-                                        .builder()
-                                        .enumResult(EstadoEnum.ERROR)
-                                        .mensaje("Este repositorio es invalido para realizar una operacion")
-                                        .build()
-                        )
-                        .build();
+                SeleccionRepositorioForm resultado = new SeleccionRepositorioForm();
+                EstadoSituacion objDto = new EstadoSituacion();
+                resultado.setRamasResult(Sets.newHashSet());
+                resultado.setRemotosResult(Lists.newArrayList());
+                resultado.setRemotosUrl(Sets.newHashSet());
+                resultado.setDtoResultado(objDto);
+                objDto.setEnumResult(EstadoEnum.ERROR);
+                objDto.setMensaje("Este repositorio es invalido para realizar una operacion");
                 System.out.println(resultado.getDtoResultado().getMensaje());
                 return resultado;
             });
         }
+        
+        public CompletableFuture<SeleccionRepositorioForm> RegistroRepoLocal(String dir) {
+            return null;
+        }
 
         private CompletableFuture<SeleccionRepositorioForm> CompletarSinRemoto() {
-            CompletableFuture<List<RamaModelo>> tareaRamaLocal = super.getComandos().ObtenerRamas(super.getRepositorio());
+            CompletableFuture<Set<RamaModelo>> tareaRamaLocal = super.getComandos().ObtenerRamas(super.getRepositorio());
+            //si no tiene remotos, envia vacio la lista
             CompletableFuture<List<RamaModelo>> tareaRamaRemoto = super.getComandos().ObtenerRemotos(super.getRepositorio());
             CompletableFuture<List<StashModelo>> tareaStash = super.getComandos().ObtenerStashes(super.getRepositorio());
             return CompletableFuture.allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash).thenApply((v) -> {
-                SeleccionRepositorioForm resultado = SeleccionRepositorioForm
-                        .builder()
-                        .ramasResult(tareaRamaLocal.join())
-                        .remotosResult(tareaRamaRemoto.join())
-                        .stashesResult(tareaStash.join())
-                        .remotosUrl(Sets.newHashSet())
-                        .dtoResultado(
-                                EstadoSituacion
-                                        .builder()
-                                        .enumResult(EstadoEnum.OK)
-                                        .mensaje("")
-                                        .build()
-                        )
-                        .build();
+                SeleccionRepositorioForm resultado = new SeleccionRepositorioForm();
+                EstadoSituacion objDto = new EstadoSituacion();
+                resultado.setRamasResult(tareaRamaLocal.join());
+                resultado.setRemotosResult(tareaRamaRemoto.join());
+                resultado.setStashesResult(tareaStash.join());
+                resultado.setRemotosUrl(Sets.newHashSet());
+                resultado.setDtoResultado(objDto);
+                objDto.setEnumResult(EstadoEnum.OK);
+                objDto.setMensaje("");
                 return resultado;
             });
         }
 
         private CompletableFuture<SeleccionRepositorioForm> CompletarConRemoto() {
-            CompletableFuture<List<RamaModelo>> tareaRamaLocal = super.getComandos().ObtenerRamas(super.getRepositorio());
+            CompletableFuture<Set<RamaModelo>> tareaRamaLocal = super.getComandos().ObtenerRamas(super.getRepositorio());
             CompletableFuture<List<RamaModelo>> tareaRamaRemoto = super.getComandos().ObtenerRemotos(super.getRepositorio());
             CompletableFuture<List<StashModelo>> tareaStash = super.getComandos().ObtenerStashes(super.getRepositorio());
             CompletableFuture<Set<RemotoModelo>> taskRemotoUrl = super.getComandos().ObtenerUrl(super.getRepositorio());
             return CompletableFuture.allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash, taskRemotoUrl).thenApply(v -> {
-                SeleccionRepositorioForm resultado = SeleccionRepositorioForm
-                        .builder()
-                        .ramasResult(tareaRamaLocal.join())
-                        .remotosResult(tareaRamaRemoto.join())
-                        .stashesResult(tareaStash.join())
-                        .remotosUrl(taskRemotoUrl.join())
-                        .dtoResultado(
-                                EstadoSituacion
-                                        .builder()
-                                        .enumResult(EstadoEnum.OK)
-                                        .mensaje("")
-                                        .build()
-                        )
-                        .build();
+                SeleccionRepositorioForm resultado = new SeleccionRepositorioForm();
+                EstadoSituacion objDto = new EstadoSituacion();
+                resultado.setRamasResult(tareaRamaLocal.join());
+                resultado.setRemotosResult(tareaRamaRemoto.join());
+                resultado.setStashesResult(tareaStash.join());
+                resultado.setRemotosUrl(taskRemotoUrl.join());
+                resultado.setDtoResultado(objDto);
+                objDto.setEnumResult(EstadoEnum.OK);
+                objDto.setMensaje("");
                 return resultado;
             });
         }

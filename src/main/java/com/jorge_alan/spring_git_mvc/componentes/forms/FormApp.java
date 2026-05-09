@@ -2,6 +2,7 @@ package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.datos.CapaDatos.ComandoOperacion;
 import com.jorge_alan.spring_git_mvc.datos.CapaDatos.GitVisualizacion;
@@ -14,6 +15,7 @@ import javax.swing.JDialog;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -26,6 +28,7 @@ public class FormApp extends javax.swing.JFrame {
     private static ControladorFormulario controladorForm = FormUsuario();//carga del controlador
     private static SeleccionRepositorioForm vistaRepo;
     private boolean validarOperaciones;
+    private String LecturaRepositorio;
 
     private static ConstruccionNavegador IniciarNavegador() {
         if (navegador == null) {
@@ -61,22 +64,20 @@ public class FormApp extends javax.swing.JFrame {
             validarOperaciones = true;
         }
         if (validarOperaciones) {
-            List<String> rutasFisicasGitLocal = Lists.newArrayList();
+            Set<String> rutasFisicasGitLocal = Sets.newHashSet();
             String ruta = navegador.RutaFisica(this);
             if (!Strings.isNullOrEmpty(ruta)) {
                 rutasFisicasGitLocal.add(ruta);
             }
             rutasFisicasGitLocal.add(ruta);
-            SeleccionRepositorioForm vistaForm = SeleccionRepositorioForm.builder()
-                    .rutasRepositorios(rutasFisicasGitLocal)
-                    .rutaActual(ruta)
-                    .build();
+            SeleccionRepositorioForm vistaForm = new SeleccionRepositorioForm();
+            vistaForm.setRutasRepositorios(rutasFisicasGitLocal);
+            vistaForm.setRutaActual(ruta);
             this.vistaRepo = vistaForm;
         } else {
-            SeleccionRepositorioForm vistaForm = SeleccionRepositorioForm.builder()
-                    .rutasRepositorios(Lists.newArrayList())
-                    .rutaActual("")
-                    .build();
+            SeleccionRepositorioForm vistaForm = new SeleccionRepositorioForm();
+            vistaForm.setRutasRepositorios(Sets.newHashSet());
+            vistaForm.setRutaActual("");
             this.vistaRepo = vistaForm;
         }
         this.panelContenedorMenu1.Load(controladorForm, vistaRepo);
@@ -100,6 +101,7 @@ public class FormApp extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tabbedPaneCustom1 = new com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom();
         panelContenedorMenu1 = new com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu();
         accesoOperacion = new javax.swing.JMenuBar();
         SeccionRama = new javax.swing.JMenu();
@@ -113,14 +115,19 @@ public class FormApp extends javax.swing.JFrame {
         setTitle("GitApp");
         setPreferredSize(winDim);
         setSize(winDim);
-        getContentPane().add(panelContenedorMenu1, java.awt.BorderLayout.CENTER);
+
+        tabbedPaneCustom1.addTab("tab1", panelContenedorMenu1);
+
+        getContentPane().add(tabbedPaneCustom1, java.awt.BorderLayout.CENTER);
 
         SeccionRama.setText("Archivos");
 
         itemCrearRepositorio.setText("Generar Repositorio...");
+        itemCrearRepositorio.addActionListener(this::itemCrearRepositorioActionPerformed);
         SeccionRama.add(itemCrearRepositorio);
 
         itemSeleccionarRepositorio.setText("Agregar Repositorio");
+        itemSeleccionarRepositorio.addActionListener(this::itemSeleccionarRepositorioActionPerformed);
         SeccionRama.add(itemSeleccionarRepositorio);
 
         accesoOperacion.add(SeccionRama);
@@ -164,6 +171,14 @@ public class FormApp extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_ItemUrlRemotoActionPerformed
 
+    private void itemCrearRepositorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCrearRepositorioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemCrearRepositorioActionPerformed
+
+    private void itemSeleccionarRepositorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSeleccionarRepositorioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemSeleccionarRepositorioActionPerformed
+
     private void LookAndFeel() {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -186,5 +201,6 @@ public class FormApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCrearRepositorio;
     private javax.swing.JMenuItem itemSeleccionarRepositorio;
     private com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu panelContenedorMenu1;
+    private com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom tabbedPaneCustom1;
     // End of variables declaration//GEN-END:variables
 }
