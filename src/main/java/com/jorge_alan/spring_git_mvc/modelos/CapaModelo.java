@@ -21,10 +21,7 @@ public final class CapaModelo {
 
     //la nomenclatura modelo funciona para realizar operaciones JPanel
     //falta realizar información detallada
-    @NoArgsConstructor
-    @AllArgsConstructor
     @ToString
-    @Builder
     public static final class RamaModelo {
 
         private String nombreRama;

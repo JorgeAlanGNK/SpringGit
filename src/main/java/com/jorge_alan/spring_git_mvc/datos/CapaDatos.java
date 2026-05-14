@@ -1,5 +1,6 @@
 package com.jorge_alan.spring_git_mvc.datos;
 
+import com.google.common.base.Strings;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -142,9 +143,9 @@ public final class CapaDatos {
         }
 
         @Override
-        public CompletableFuture<List<RamaModelo>> ObtenerRemotos(String repositorio) {
+        public CompletableFuture<Set<RamaModelo>> ObtenerRemotos(String repositorio) {
             return CompletableFuture.supplyAsync(() -> {
-                List<RamaModelo> ramas = Lists.newArrayList();
+                Set<RamaModelo> ramas = Sets.newHashSet();
                 try {
                     Path directorio = Paths.get(repositorio);
                     if (!Files.isDirectory(directorio)) {
@@ -181,7 +182,27 @@ public final class CapaDatos {
             });
         }
 
-        
+        @Override
+        public CompletableFuture<Boolean> VerificarRamaRemota(String repositorio) {
+            return CompletableFuture.supplyAsync(() -> {
+                RemotoModelo objRama = new RemotoModelo();
+                try {
+                    Path directorio = Paths.get(repositorio);
+                    if (!Files.isDirectory(directorio)) {
+                        throw new IllegalArgumentException("No se puede leer este repositorio o no existe, favor de validar");
+                    }
+                    String cmdResultado = ProcComando(directorio, TipoComando.REMOTE, WildCard.VERBOSE);
+                    objRama = this.comando.RemotosUrl(cmdResultado);
+                    boolean resultado = !Strings.isNullOrEmpty(objRama.getFetch()) && !Strings.isNullOrEmpty(objRama.getPush());
+                    return resultado;
+                } catch (Exception e) {
+                    System.out.println("Error");
+                    e.printStackTrace();
+                }
+                return false;
+            });
+        }
+
     }
 
     public static final class ComandoOperacion implements OperacionUsuario {
@@ -211,11 +232,13 @@ public final class CapaDatos {
 
         CompletableFuture<List<StashModelo>> ObtenerStashes(String repositorio);
 
-        CompletableFuture<List<RamaModelo>> ObtenerRemotos(String repositorio);
+        CompletableFuture<Set<RamaModelo>> ObtenerRemotos(String repositorio);
 
         CompletableFuture<Boolean> SwitchRama(String repositorio, String nombreRama);
-        
+
         CompletableFuture<Set<RemotoModelo>> ObtenerUrl(String repositorio);
+
+        CompletableFuture<Boolean> VerificarRamaRemota(String repositorio);
     }
 
     public interface OperacionUsuario {

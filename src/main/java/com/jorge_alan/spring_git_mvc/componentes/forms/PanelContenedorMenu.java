@@ -2,19 +2,15 @@ package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.VistasModelos.SeleccionRepositorioForm;
-import java.util.List;
-import javax.swing.Icon;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtensionImpl;
 
-import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
-import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
-import com.jorge_alan.spring_git_mvc.negocios.ActualizadorMenu.CargaUsuario;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import java.awt.Dimension;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import static com.jorge_alan.spring_git_mvc.componentes.forms.FormApp.setSituacionDto;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
+import javax.swing.JOptionPane;
 
 public class PanelContenedorMenu extends javax.swing.JPanel {
 
@@ -30,40 +26,37 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     private java.awt.Dimension sizeRemotosPanel;
     private java.awt.Dimension sizeStashesPanel;
     private ImagenEstatica extImagenes = new ImagenEstatica();
-    private SeleccionRepositorioForm vista;
+    private ModeloRepositorio vistaRepo;
 
     public PanelContenedorMenu() {
         initComponents();
     }
 
-    public void Load(ControladorFormulario controlador) {
-        initIcons();
-    }
-
-    public void Load(ControladorFormulario controlador, SeleccionRepositorioForm vista) {
+    public void Load(ControladorFormulario controlador, ModeloRepositorio vista) {
         this.controlador = controlador;
-        this.vista = vista;
+        this.vistaRepo = vista;
         this.controlador.setModelo(vista);
         ExecuteVisual();
-    }
-
-    private void initIcons() {
-        
     }
 
     //ayuda para volver actualizar las ramas
     private void ExecuteVisual() {
         this.controlador.ProcesoInicioGit(false).thenAccept(result -> {
-            this.vista.setRamasResult(result.getRamasResult());
-            this.vista.setRemotosResult(result.getRemotosResult());
-            this.vista.setStashesResult(result.getStashesResult());
-            this.vista.setDtoResultado(result.getDtoResultado());
-            this.vista.setRemotosUrl(result.getRemotosUrl());
-            this.vista.setActivarDireccionUrl(result.getRemotosUrl().size() == 0);
-            this.controlador.setModelo(this.vista);
-            this.vista = this.controlador.getModelo();
-            this.ramaLocalArea.setRamaLocal(this.vista.getRamasResult(), this.vista.getDtoResultado());
-            this.ramaRemotoOrigin.setRamaRemotos(this.vista.getRemotosResult(), this.vista.getDtoResultado());
+            EstadoSituacion objSituacion = result.getSituacion();
+            this.vistaRepo.setRamasLocales(result.getRamasLocales());
+            this.vistaRepo.setRamasRemotas(result.getRamasRemotas());
+            this.vistaRepo.setStashes(result.getStashes());
+            this.vistaRepo.setRemotosUrl(result.getRemotosUrl());
+            this.vistaRepo.setActivo(result.isActivo());
+            this.vistaRepo.setRepositorios(result.getRepositorios());
+            if (objSituacion.getTipoEnum() == EstadoEnum.ERROR || objSituacion.getTipoEnum() == EstadoEnum.NOT_FOUND) {
+                JOptionPane.showMessageDialog(this, objSituacion.getMensaje(), "Repositorio Invalido", JOptionPane.WARNING_MESSAGE);
+            }
+            setSituacionDto(objSituacion);
+            this.controlador.setModelo(this.vistaRepo);
+            this.vistaRepo = this.controlador.getModelo();
+            this.ramaLocalArea.setRamaLocal(this.vistaRepo.getRamasLocales(), objSituacion);
+            this.ramaRemotoOrigin.setRamaRemotos(this.vistaRepo.getRamasRemotas(), objSituacion);
         });
     }
 
