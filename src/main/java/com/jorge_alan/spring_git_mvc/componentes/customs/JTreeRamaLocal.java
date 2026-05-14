@@ -5,27 +5,21 @@ import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtensionImpl;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.VistasModelos.EstadoSituacion;
-import java.awt.BorderLayout;
-import java.awt.Color;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Queue;
-import javax.swing.BorderFactory;
+import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
 public class JTreeRamaLocal extends JTree {
 
-    private List<RamaModelo> ramaLocal;
+    private Set<RamaModelo> ramaLocal;
     private List<String> carpetas;
     private EstadoSituacion situacionUsuario;
     private final EstructuraNavegacion navegacion = new EstructuraNavegacion();
@@ -43,19 +37,12 @@ public class JTreeRamaLocal extends JTree {
             //se envia para restrable
             DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) value;
             CeldaPersonalizada celda = new CeldaPersonalizada();
-            //logica para realizar la celda si tiene elementos o no
-            if (noHasChildren) {
-                celda.setLeafIcon(rama);
-            } else {
-                celda.setLeafIcon(folder);
-            }
             //adaptacion de la celda mediante la longitud del texto que se va a enviar
             Dimension dimCelda = celda.getPreferredSize();
             double longitudCelda = (double) dimCelda.getWidth() * 2.5;
             dimCelda.setSize(longitudCelda, dimCelda.getHeight());
             celda.setPreferredSize(dimCelda);
             String valueRama = nodo.getUserObject().toString();
-            celda.setNombreRama(valueRama);
             return this;
         }
     };
@@ -67,11 +54,11 @@ public class JTreeRamaLocal extends JTree {
         setCellRenderer(renderCell);
     }
 
-    public List<RamaModelo> getRamaLocal() {
+    public Set<RamaModelo> getRamaLocal() {
         return ramaLocal;
     }
 
-    public void setRamaLocal(List<RamaModelo> ramaLocal, EstadoSituacion response) {
+    public void setRamaLocal(Set<RamaModelo> ramaLocal, EstadoSituacion response) {
         this.ramaLocal = ramaLocal;
         RellenarRamas();
     }
@@ -91,8 +78,7 @@ public class JTreeRamaLocal extends JTree {
     private void RellenarRamas() {
         DefaultTreeModel modelo = (DefaultTreeModel) getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) modelo.getRoot();//el parent Actual
-        for (int i = 0; i < this.ramaLocal.size(); i++) {
-            RamaModelo estructuraRama = this.ramaLocal.get(i);
+        for (RamaModelo estructuraRama : ramaLocal) {
             Queue<String> carpetas = null;
             if (estructuraRama.isCarpeta()) {
                 carpetas = Queues.newArrayDeque(estructuraRama.getCarpetas());

@@ -22,11 +22,8 @@ public final class EstructuraComponente {
     public static final class ImagenEstatica {
 
         private IconoExtension iconoExtension = new IconoExtensionImpl();
-        
-        private int tamañoImagen;
 
         public ImagenEstatica() {
-            this.tamañoImagen = 20;
         }
         
         //Clase relacionada con ConstanteIcono

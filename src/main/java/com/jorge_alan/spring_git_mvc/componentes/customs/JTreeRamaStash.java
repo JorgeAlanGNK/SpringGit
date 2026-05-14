@@ -5,8 +5,6 @@ import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
 import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
 import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtensionImpl;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.VistasModelos;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.VistasModelos.EstadoSituacion;
 import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
 
 import java.awt.Component;
@@ -17,6 +15,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 
 
 public class JTreeRamaStash extends JTree {
@@ -67,7 +67,7 @@ public class JTreeRamaStash extends JTree {
     }
 
     private void RellenarStashes() {
-        if (this.situacionUsuario.getEnumResult() == VistasModelos.EstadoEnum.OK && !this.stashModelo.isEmpty()) {
+        if (this.situacionUsuario.getTipoEnum() == EstadoEnum.OK && !this.stashModelo.isEmpty()) {
             DefaultTreeModel modeloActual = (DefaultTreeModel) getModel();
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) modeloActual.getRoot();
             Queue<String> items = Queues.newArrayDeque();

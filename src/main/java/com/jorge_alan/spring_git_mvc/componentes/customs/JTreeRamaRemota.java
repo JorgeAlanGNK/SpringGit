@@ -6,11 +6,12 @@ import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
 import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
 import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtensionImpl;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.VistasModelos.EstadoSituacion;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -18,7 +19,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 public class JTreeRamaRemota extends JTree {
     
-    private List<RamaModelo> ramaRemotos;
+    private Set<RamaModelo> ramaRemotos;
     private final IconoExtension extIcono = new IconoExtensionImpl();
     private EstadoSituacion situacionUsuario;
     private final EstructuraNavegacion navegacion = new EstructuraNavegacion();
@@ -54,7 +55,7 @@ public class JTreeRamaRemota extends JTree {
         this.navegacion.VaciarRamas((DefaultTreeModel)getModel(), "origin");
     }
 
-    public List<RamaModelo> getRamaRemotos() {
+    public Set<RamaModelo> getRamaRemotos() {
         return ramaRemotos;
     }
     
@@ -62,7 +63,7 @@ public class JTreeRamaRemota extends JTree {
         return situacionUsuario;
     }
 
-    public void setRamaRemotos(List<RamaModelo> ramaRemotos, EstadoSituacion situacionUsuario) {
+    public void setRamaRemotos(Set<RamaModelo> ramaRemotos, EstadoSituacion situacionUsuario) {
         this.ramaRemotos = ramaRemotos;
         this.situacionUsuario = situacionUsuario;
         RellenarRemotos();
@@ -71,8 +72,7 @@ public class JTreeRamaRemota extends JTree {
     private void RellenarRemotos() {
         DefaultTreeModel modelo = (DefaultTreeModel) getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) modelo.getRoot();//el parent Actual
-        for (int i = 0; i < this.ramaRemotos.size(); i++) {
-            RamaModelo estructuraRama = this.ramaRemotos.get(i);
+        for (RamaModelo estructuraRama : ramaRemotos) {
             Queue<String> carpetas = null;
             if (estructuraRama.isCarpeta()) {
                 carpetas = Queues.newArrayDeque(estructuraRama.getCarpetas());

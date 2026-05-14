@@ -5,10 +5,11 @@ import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RemotoModelo;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public interface BufferComando {
 
-    List<RamaModelo> LecturaRama(String streamResult) throws IOException, InterruptedException;
+    Set<RamaModelo> LecturaRama(String streamResult) throws IOException, InterruptedException;
 
     List<StashModelo> StashLectura(String streamResult) throws IOException, InterruptedException;
 
