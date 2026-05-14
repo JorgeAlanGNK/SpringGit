@@ -188,8 +188,8 @@ public class ModalTokenUrl extends javax.swing.JDialog {
 
     public void setActivarUrlRemoto(boolean activarUrlRemoto) {
         this.activarUrlRemoto = activarUrlRemoto;
-        this.descUrlRemoto.setVisible(activarUrlRemoto);
-        this.campoUrlRemoto.setVisible(activarUrlRemoto);
+        this.descUrlRemoto.setVisible(!activarUrlRemoto);
+        this.campoUrlRemoto.setVisible(!activarUrlRemoto);
         revalidate();
         repaint();
     }

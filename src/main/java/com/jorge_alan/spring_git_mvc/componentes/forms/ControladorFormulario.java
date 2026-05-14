@@ -1,34 +1,46 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
-import com.jorge_alan.spring_git_mvc.componentes.forms.Controlador;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.VistasModelos.SeleccionRepositorioForm;
-import com.jorge_alan.spring_git_mvc.negocios.ActualizadorMenu.CargaUsuario;
-import com.jorge_alan.spring_git_mvc.negocios.ActualizadorMenu;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.BaseModelo;
+import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import java.util.concurrent.CompletableFuture;
 
-public class ControladorFormulario extends Controlador<CargaUsuario, SeleccionRepositorioForm> {
+public class ControladorFormulario extends Controlador<IniciadorUsuario, ModeloRepositorio> {
 
     //se implementa la capa de negocio
-    public ControladorFormulario(CargaUsuario menuActual) {
+    public ControladorFormulario(IniciadorUsuario menuActual) {
         super(menuActual);
     }
 
     @Override
-    public SeleccionRepositorioForm getModelo() {
+    public ModeloRepositorio getModelo() {
         return super.getModeloPrincipal();
     }
 
     @Override
-    public void setModelo(SeleccionRepositorioForm modelo) {
+    public void setModelo(ModeloRepositorio modelo) {
         super.setModeloPrincipal(modelo);
     }
 
-    public CompletableFuture<SeleccionRepositorioForm> ProcesoInicioGit(boolean hayRemoto) {
-        CargaUsuario negocio = super.getControladorActual();
-        String repositorio = getModelo().getRutaActual();
+    public CompletableFuture<ModeloRepositorio> ProcesoInicioGit(boolean hayRemoto) {
+        IniciadorUsuario negocio = super.getControladorActual();
+        String repositorio = getModelo().getRepositorioActual();
         negocio.EnviarRepositorio(repositorio);
         return negocio.ObtenerTareaPrincipal(hayRemoto);
+    }
+    
+    public CompletableFuture<Boolean> VerificarRemoto() {
+        IniciadorUsuario negocio = super.getControladorActual();
+        String repositorio = getModelo().getRepositorioActual();
+        negocio.EnviarRepositorio(repositorio);
+        return negocio.ExisteRemotoUrl();
+    };
+    
+    //este metodo funciona para verificar varios repositorios por la cadena
+    public CompletableFuture<Boolean> VerificarRemoto(String repositorio) {
+        IniciadorUsuario negocio = super.getControladorActual();
+        negocio.EnviarRepositorio(repositorio);//necesario para revisar
+        return negocio.ExisteRemotoUrl();
     }
 
 }

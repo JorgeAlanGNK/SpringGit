@@ -77,5 +77,6 @@ public final class Diseno {
         public static final String ICONO_FOLDER = "static/folder-2-svgrepo-com.svg";
         public static final String ICONO_GIT_LOGO = "static/github-color-svgrepo-com.svg";
         public static final String ICONO_STASH_LOGO_ITEM = "static/json-svgrepo-com.svg";
+        public static final String ICONO_AGREGAR_TAB = "static/plus-1469-svgrepo-com.svg";
     }
 }

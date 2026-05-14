@@ -2,6 +2,7 @@ package com.jorge_alan.spring_git_mvc.datos;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RemotoModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
@@ -13,13 +14,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ComandoUpdate implements BufferComando {
 
     @Override
-    public List<RamaModelo> LecturaRama(String resultStream) throws IOException, InterruptedException {
+    public Set<RamaModelo> LecturaRama(String resultStream) throws IOException, InterruptedException {
         Objects.requireNonNull(resultStream, "No se puede leer el buffer");
-        List<RamaModelo> ramaModelo = Lists.newArrayList();
+        Set<RamaModelo> ramaModelo = Sets.newHashSet();
         String[] lineas = resultStream.split("\\R+");
         for (String branchLocal : lineas) {
             if (branchLocal.isBlank()) {
