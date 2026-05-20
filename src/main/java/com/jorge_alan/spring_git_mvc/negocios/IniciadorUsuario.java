@@ -40,7 +40,9 @@ public class IniciadorUsuario extends ActualizadorMenu {
                 repositorio.setRepositorios(Sets.newHashSet());
                 dtoResultado.setMensaje("Repositorio no valido para la operacion");
                 dtoResultado.setTipoEnum(EstadoEnum.NOT_FOUND);
-                repositorio.getRepositorios().add(super.getRepositorio());
+                if (!Strings.isNullOrEmpty(super.getRepositorio())) {
+                    repositorio.getRepositorios().add(super.getRepositorio());
+                }
                 return repositorio;
             });
         }
@@ -66,14 +68,16 @@ public class IniciadorUsuario extends ActualizadorMenu {
             return resultado;
         });
     }
-    
+
     public CompletableFuture<Boolean> ExisteRemotoUrl() {
         CompletableFuture<Boolean> remotoUrl = super.getComandos().VerificarRamaRemota(super.getRepositorio());
         return remotoUrl.exceptionally((error) -> {
             System.out.println(error.getMessage());
             return false;
         });
-    };
+    }
+
+    ;
 
     public CompletableFuture<ModeloRepositorio> RegistroRepoLocal(String dir) {
         return null;
@@ -88,7 +92,9 @@ public class IniciadorUsuario extends ActualizadorMenu {
             EstadoSituacion objDto = new EstadoSituacion();
             ModeloRepositorio resultado = new ModeloRepositorio(objDto);
             resultado.setRepositorios(Sets.newHashSet());
-            resultado.getRepositorios().add(super.getRepositorio());
+            if (!Strings.isNullOrEmpty(super.getRepositorio())) {
+                resultado.getRepositorios().add(super.getRepositorio());
+            }
             resultado.setRepositorioActual(super.getRepositorio());
             resultado.setActivo(!tareaRamaRemoto.join().isEmpty());
             resultado.setRamasLocales(tareaRamaLocal.join());
@@ -116,7 +122,9 @@ public class IniciadorUsuario extends ActualizadorMenu {
             resultado.setRamasRemotas(tareaRamaRemoto.join());
             resultado.setStashes(tareaStash.join());
             resultado.setRemotosUrl(taskRemotoUrl.join());
-            resultado.getRepositorios().add(super.getRepositorio());
+            if (!Strings.isNullOrEmpty(super.getRepositorio())) {
+                resultado.getRepositorios().add(super.getRepositorio());
+            }
             objDto.setTipoEnum(EstadoEnum.OK);
             objDto.setMensaje("");
             return resultado;
