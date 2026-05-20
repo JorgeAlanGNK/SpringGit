@@ -12,8 +12,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstruccionNavegador;
-import com.jorge_alan.spring_git_mvc.datos.CapaDatos.ComandoOperacion;
-import com.jorge_alan.spring_git_mvc.datos.CapaDatos.GitVisualizacion;
+import com.jorge_alan.spring_git_mvc.datos.capaDatos.GitVisualizacion;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.BaseModelo;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
@@ -56,8 +55,7 @@ public class FormApp extends javax.swing.JFrame {
     private static IniciadorUsuario CargaInicio() {
         if (manejoUsuario == null) {
             return new IniciadorUsuario(
-                    new GitVisualizacion(),
-                    new ComandoOperacion());
+                    new GitVisualizacion());
         }
         return manejoUsuario;
     }

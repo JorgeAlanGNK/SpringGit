@@ -1,15 +1,11 @@
 package com.jorge_alan.spring_git_mvc.modelos;
 
 import java.util.Date;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 import lombok.ToString;
 
 public final class CapaModelo {
