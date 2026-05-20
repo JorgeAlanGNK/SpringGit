@@ -1,37 +1,55 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.datos.CapaDatos.ComandoOperacion;
 import com.jorge_alan.spring_git_mvc.datos.CapaDatos.GitVisualizacion;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.BaseModelo;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 
-import javax.swing.JDialog;
-import java.awt.Toolkit;
-import java.awt.Dimension;
-import java.util.Set;
-import javax.swing.JOptionPane;
-
 public class FormApp extends javax.swing.JFrame {
 
-    private static final Dimension winDim = Toolkit.getDefaultToolkit().getScreenSize();
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FormApp.class.getName());
-    private static ConstruccionNavegador navegador = IniciarNavegador();//se encarga de verificar diseños y verificaciones de ciertos componentes
-    private static IniciadorUsuario manejoUsuario = CargaInicio();//capa de negocio;
-    private static ControladorFormulario controladorForm = FormUsuario();//carga del controlador
-    private static BaseModelo vistaRepo = ModeloIdentico();
+    private static Dimension winDim = Toolkit.getDefaultToolkit().getScreenSize();
+    private static java.util.logging.Logger logger;
+    private static ConstruccionNavegador navegador;// se encarga de verificar diseños y verificaciones de ciertos
+    // componentes
+    private static IniciadorUsuario manejoUsuario;// capa de negocio;
+    private static ControladorFormulario controladorForm;// carga del controlador
+    private static BaseModelo vistaRepo;
+    private static List<com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu> panelesRepositorios;// inicio de la carga de diferentes repositorios
     private boolean validarOperaciones;
-    private String LecturaRepositorio;
 
-    private static ConstruccionNavegador IniciarNavegador() {
+    public FormApp() {
+        winDim = Toolkit.getDefaultToolkit().getScreenSize();
+        logger = java.util.logging.Logger.getLogger(FormApp.class.getName());
+        navegador = IniciarNavegador(this);
+        manejoUsuario = CargaInicio();
+        controladorForm = FormUsuario();
+        vistaRepo = ModeloIdentico();
+        panelesRepositorios = Lists.newArrayList();
+        setVisible(true);
+        LookAndFeel();
+        initComponents();
+        VistaInit();
+    }
+
+    private static ConstruccionNavegador IniciarNavegador(javax.swing.JFrame app) {
         if (navegador == null) {
             return new ConstruccionNavegador();
         }
+        navegador.setApp(app);
         return navegador;
     }
 
@@ -55,6 +73,7 @@ public class FormApp extends javax.swing.JFrame {
         if (vistaRepo == null) {
             vistaRepo = new BaseModelo();
         }
+        controladorForm.setModeloPrincipal(null);// se espera la carga del repositorio
         return vistaRepo;
     }
 
@@ -63,44 +82,56 @@ public class FormApp extends javax.swing.JFrame {
     }
 
     private void VistaInit() {
+        // vaciar el tabbedPaneActual
+        this.tabbedPaneCustom1.removeAll();
+        revalidate();
+        repaint();
+        // comenzar a tomar el primer repositorio
         if (!navegador.ComprobacionGITVersion()) {
             String mensaje = "Esta aplicación requiere forzosamente instalada la extensión GIT\\n"
                     + "favor de buscar la siguiente URL https://git-scm.com/install/";
-            JOptionPane.showMessageDialog(this, mensaje, "Instalador Git no instalado", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, mensaje, "Instalador Git no instalado",
+                    JOptionPane.INFORMATION_MESSAGE);
             validarOperaciones = false;
         } else {
             validarOperaciones = true;
         }
-        if (validarOperaciones) {
+        if (validarOperaciones) {// se carga al controlador
             Set<String> rutasFisicasGitLocal = Sets.newHashSet();
             String ruta = navegador.RutaFisica(this);
             if (!Strings.isNullOrEmpty(ruta)) {
                 rutasFisicasGitLocal.add(ruta);
             }
-            rutasFisicasGitLocal.add(ruta);
             ModeloRepositorio repoView = new ModeloRepositorio();
             repoView.setRepositorios(rutasFisicasGitLocal);
             repoView.setRepositorioActual(ruta);
-            this.vistaRepo.setFormRepositorio(repoView);
+            ActualizarControlador(repoView);
         } else {
             ModeloRepositorio repoView = new ModeloRepositorio();
             repoView.setRepositorios(Sets.newHashSet());
             repoView.setRepositorioActual("");
             repoView.setActivo(false);
-            this.vistaRepo.setFormRepositorio(repoView);
+            ActualizarControlador(repoView);
         }
-        this.panelContenedorMenu1.Load(controladorForm, vistaRepo.getFormRepositorio());
-    }
-    
-    private void EnviarRepositorioTab() {
-        vistaRepo.getFormRepositorio();
+        // comenzamos a cargar el panel del menu principal
+        com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu repoMenu = new com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu();
+        panelesRepositorios.add(repoMenu);
+        repoMenu.Load(controladorForm);
+        // enviamos los datos a JTabbedPane para el repositorio
+        if (!vistaRepo.getFormRepositorio().getRepositorios().isEmpty()) {
+            for (String repo : vistaRepo.getFormRepositorio().getRepositorios()) {
+                int pos_repo = repo.lastIndexOf("\\");
+                String titulo = repo.substring(pos_repo).replace("\\", "").trim();
+                this.tabbedPaneCustom1.addTab(titulo, repoMenu);
+            }
+        }
+        repaint();
+        revalidate();
     }
 
-    public FormApp() {
-        setVisible(true);
-        LookAndFeel();
-        initComponents();
-        VistaInit();
+    private void ActualizarControlador(ModeloRepositorio repo) {
+        vistaRepo.setFormRepositorio(repo);
+        controladorForm.setModelo(vistaRepo.getFormRepositorio());
     }
 
     private void CenterInfoModal(JDialog modal) {
@@ -111,7 +142,8 @@ public class FormApp extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         tabbedPaneCustom1 = new com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom();
@@ -130,6 +162,8 @@ public class FormApp extends javax.swing.JFrame {
         setSize(winDim);
 
         tabbedPaneCustom1.addTab("tab1", panelContenedorMenu1);
+
+        tabbedPaneCustom1.setNavegador(navegador);
 
         getContentPane().add(tabbedPaneCustom1, java.awt.BorderLayout.CENTER);
 
@@ -162,17 +196,19 @@ public class FormApp extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ItemTokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemTokenActionPerformed
+    private void ItemTokenActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ItemTokenActionPerformed
         controladorForm.VerificarRemoto().thenAccept((result) -> {
             ModalTokenUrl modalToken = new ModalTokenUrl(this, true);
             boolean resultado = result;
             modalToken.setActivarUrlRemoto(vistaRepo.getFormRepositorio().isActivo());
             CenterInfoModal(modalToken);
         });
-    }//GEN-LAST:event_ItemTokenActionPerformed
+    }// GEN-LAST:event_ItemTokenActionPerformed
 
-    private void ItemUrlRemotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemUrlRemotoActionPerformed
-        String urlRemoto = JOptionPane.showInputDialog(this, "Ingrese la url de su repositorio Remoto que le proporciona GitHub de este repositorio local", "Repositorio GitHub", JOptionPane.INFORMATION_MESSAGE);
+    private void ItemUrlRemotoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ItemUrlRemotoActionPerformed
+        String urlRemoto = JOptionPane.showInputDialog(this,
+                "Ingrese la url de su repositorio Remoto que le proporciona GitHub de este repositorio local",
+                "Repositorio GitHub", JOptionPane.INFORMATION_MESSAGE);
         manejoUsuario.ObtenerTareaPrincipal(!Strings.isNullOrEmpty(urlRemoto)).thenAccept((resultado) -> {
             ModeloRepositorio actual = vistaRepo.getFormRepositorio();
             actual.setRamasLocales(resultado.getRamasLocales());
@@ -185,15 +221,15 @@ public class FormApp extends javax.swing.JFrame {
             modalToken.setActivarUrlRemoto(actual.isActivo());
             CenterInfoModal(modalToken);
         });
-    }//GEN-LAST:event_ItemUrlRemotoActionPerformed
+    }// GEN-LAST:event_ItemUrlRemotoActionPerformed
 
-    private void itemCrearRepositorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCrearRepositorioActionPerformed
+    private void itemCrearRepositorioActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_itemCrearRepositorioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_itemCrearRepositorioActionPerformed
+    }// GEN-LAST:event_itemCrearRepositorioActionPerformed
 
-    private void itemSeleccionarRepositorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSeleccionarRepositorioActionPerformed
+    private void itemSeleccionarRepositorioActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_itemSeleccionarRepositorioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_itemSeleccionarRepositorioActionPerformed
+    }// GEN-LAST:event_itemSeleccionarRepositorioActionPerformed
 
     private void LookAndFeel() {
         try {

@@ -19,6 +19,8 @@ public final class Diseno {
 
     public static final class ConstruccionNavegador {
 
+        private JFrame app;//actual jframe de la app, se necesita para mostrar los dialogos o exploradores de archivos
+
         public boolean ComprobacionGITVersion() {
             try {
                 ProcessBuilder builder = new ProcessBuilder("git", "--version");
@@ -56,6 +58,14 @@ public final class Diseno {
                 JOptionPane.showMessageDialog(app, "Repositorio no reconocido, favor de seleccionar el repositorio Adecuado", "Repositorio no seleccionado", JOptionPane.WARNING_MESSAGE);
             }
             return ruta;
+        }
+
+        public JFrame getApp() {
+            return app;
+        }
+
+        public void setApp(JFrame app) {
+            this.app = app;
         }
 
     }

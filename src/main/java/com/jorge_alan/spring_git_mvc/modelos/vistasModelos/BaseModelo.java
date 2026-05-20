@@ -1,16 +1,19 @@
 package com.jorge_alan.spring_git_mvc.modelos.vistasModelos;
 
-//representa todos los modelos genericos
-import com.google.common.collect.Maps;
+import java.util.Set;
+
+import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class BaseModelo {
     
-    private ModeloRepositorio formRepositorio = new ModeloRepositorio();
-    private EstadoSituacion situacion = new EstadoSituacion();
+    private ModeloRepositorio formRepositorio;
+    private EstadoSituacion situacion;
+
+    public BaseModelo() {
+        this.formRepositorio = new ModeloRepositorio();
+        this.situacion = new EstadoSituacion();
+    }
 
     public ModeloRepositorio getFormRepositorio() {
         return formRepositorio;
@@ -27,4 +30,5 @@ public class BaseModelo {
     public void setSituacion(EstadoSituacion situacion) {
         this.situacion = situacion;
     }
+    
 }

@@ -1,7 +1,7 @@
 package com.jorge_alan.spring_git_mvc.componentes.customs;
 
 import com.google.common.collect.Queues;
-import com.jorge_alan.spring_git_mvc.componentes.Diseno;
+import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
 import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
@@ -42,9 +42,9 @@ public class JTreeRamaRemota extends JTree {
                 }
                 //se envia para restrable
                 DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) value;
-                leafIcon = extIcono.MostrarIcono(Diseno.ConstanteIcono.ICONO_RAMA_SOLIDO_SELECCION, 20, 20);
-                closedIcon = extIcono.MostrarIcono(Diseno.ConstanteIcono.ICONO_FOLDER, 20, 20);
-                openIcon = extIcono.MostrarIcono(Diseno.ConstanteIcono.ICONO_FOLDER, 20, 20);
+                leafIcon = extIcono.MostrarIcono(ConstanteIcono.ICONO_RAMA_SOLIDO_SELECCION, 20, 20);
+                closedIcon = extIcono.MostrarIcono(ConstanteIcono.ICONO_FOLDER, 20, 20);
+                openIcon = extIcono.MostrarIcono(ConstanteIcono.ICONO_FOLDER, 20, 20);
                 String valueRama = nodo.getUserObject().toString();
                 return this;
             }
