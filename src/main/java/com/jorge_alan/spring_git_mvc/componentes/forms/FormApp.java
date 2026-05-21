@@ -3,15 +3,13 @@ package com.jorge_alan.spring_git_mvc.componentes.forms;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstruccionNavegador;
+import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.GitVisualizacion;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.BaseModelo;
@@ -48,7 +46,6 @@ public class FormApp extends javax.swing.JFrame {
         if (navegador == null) {
             return new ConstruccionNavegador();
         }
-        navegador.setApp(app);
         return navegador;
     }
 
@@ -85,7 +82,9 @@ public class FormApp extends javax.swing.JFrame {
         revalidate();
         repaint();
         // comenzar a tomar el primer repositorio
-        if (!navegador.ComprobacionGITVersion()) {
+        if (!navegador.ComprobacionGITVersion()) {//verificamos si tiene GIT instalado
+            //en caso de no tenerlo no podra realizar otra operacion
+           //ansible ayuda a instalar este componente
             String mensaje = "Esta aplicación requiere forzosamente instalada la extensión GIT\\n"
                     + "favor de buscar la siguiente URL https://git-scm.com/install/";
             JOptionPane.showMessageDialog(this, mensaje, "Instalador Git no instalado",
@@ -95,34 +94,34 @@ public class FormApp extends javax.swing.JFrame {
             validarOperaciones = true;
         }
         if (validarOperaciones) {// se carga al controlador
-            Set<String> rutasFisicasGitLocal = Sets.newHashSet();
-            String ruta = navegador.RutaFisica(this);
-            if (!Strings.isNullOrEmpty(ruta)) {
-                rutasFisicasGitLocal.add(ruta);
-            }
-            ModeloRepositorio repoView = new ModeloRepositorio();
-            repoView.setRepositorios(rutasFisicasGitLocal);
-            repoView.setRepositorioActual(ruta);
-            ActualizarControlador(repoView);
+//            Set<String> rutasFisicasGitLocal = Sets.newHashSet();
+//            String ruta = navegador.RutaFisica(this);
+//            if (!Strings.isNullOrEmpty(ruta)) {
+//                rutasFisicasGitLocal.add(ruta);
+//            }
+//            ModeloRepositorio repoView = new ModeloRepositorio();
+//            repoView.setRepositorios(rutasFisicasGitLocal);
+//            repoView.setRepositorioActual(ruta);
+//            ActualizarControlador(repoView);
         } else {
-            ModeloRepositorio repoView = new ModeloRepositorio();
-            repoView.setRepositorios(Sets.newHashSet());
-            repoView.setRepositorioActual("");
-            repoView.setActivo(false);
-            ActualizarControlador(repoView);
+//            ModeloRepositorio repoView = new ModeloRepositorio();
+//            repoView.setRepositorios(Sets.newHashSet());
+//            repoView.setRepositorioActual("");
+//            repoView.setActivo(false);
+//            ActualizarControlador(repoView);
         }
         // comenzamos a cargar el panel del menu principal
-        com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu repoMenu = new com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu();
-        panelesRepositorios.add(repoMenu);
-        repoMenu.Load(controladorForm);
-        // enviamos los datos a JTabbedPane para el repositorio
-        if (!vistaRepo.getFormRepositorio().getRepositorios().isEmpty()) {
-            for (String repo : vistaRepo.getFormRepositorio().getRepositorios()) {
-                int pos_repo = repo.lastIndexOf("\\");
-                String titulo = repo.substring(pos_repo).replace("\\", "").trim();
-                this.tabbedPaneCustom1.addTab(titulo, repoMenu);
-            }
-        }
+//        com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu repoMenu = new com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu();
+//        panelesRepositorios.add(repoMenu);
+//        repoMenu.Load(controladorForm);
+//        // enviamos los datos a JTabbedPane para el repositorio
+//        if (!vistaRepo.getFormRepositorio().getRepositorios().isEmpty()) {
+//            for (String repo : vistaRepo.getFormRepositorio().getRepositorios()) {
+//                int pos_repo = repo.lastIndexOf("\\");
+//                String titulo = repo.substring(pos_repo).replace("\\", "").trim();
+//                this.tabbedPaneCustom1.addTab(titulo, repoMenu);
+//            }
+//        }
         repaint();
         revalidate();
     }
@@ -138,12 +137,14 @@ public class FormApp extends javax.swing.JFrame {
         modal.setLocation((int) xPos, (int) yPos);
         modal.setVisible(true);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        variedadLayoutPanel = new javax.swing.JLayeredPane();
+        menuNoRepoFound = new com.jorge_alan.spring_git_mvc.componentes.forms.MenuSelection();
         tabbedPaneCustom1 = new com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom();
         panelContenedorMenu1 = new com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu();
         accesoOperacion = new javax.swing.JMenuBar();
@@ -159,11 +160,14 @@ public class FormApp extends javax.swing.JFrame {
         setPreferredSize(winDim);
         setSize(winDim);
 
+        variedadLayoutPanel.setLayout(new java.awt.CardLayout());
+        variedadLayoutPanel.add(menuNoRepoFound, "card3");
+
         tabbedPaneCustom1.addTab("tab1", panelContenedorMenu1);
 
-        tabbedPaneCustom1.setNavegador(navegador);
+        variedadLayoutPanel.add(tabbedPaneCustom1, "card2");
 
-        getContentPane().add(tabbedPaneCustom1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(variedadLayoutPanel, java.awt.BorderLayout.CENTER);
 
         SeccionRama.setText("Archivos");
 
@@ -250,7 +254,9 @@ public class FormApp extends javax.swing.JFrame {
     private javax.swing.JMenuBar accesoOperacion;
     private javax.swing.JMenuItem itemCrearRepositorio;
     private javax.swing.JMenuItem itemSeleccionarRepositorio;
+    private com.jorge_alan.spring_git_mvc.componentes.forms.MenuSelection menuNoRepoFound;
     private com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu panelContenedorMenu1;
     private com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom tabbedPaneCustom1;
+    private javax.swing.JLayeredPane variedadLayoutPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,8 +9,7 @@ import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.Icon;
 
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstruccionNavegador;
-
+import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 public class CeldaPersonalizada extends javax.swing.JPanel {
 //celda personalizada para un JTabbedPane
     //default Color show
