@@ -7,7 +7,6 @@ import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import java.awt.Dimension;
 import javax.swing.JTextField;
-import static com.jorge_alan.spring_git_mvc.componentes.forms.FormApp.setSituacionDto;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import javax.swing.JOptionPane;
@@ -34,8 +33,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         ExecuteVisual();
     }
 
-    //ayuda a identificar el panel con el repositorio
-    public String getIdRepoNombre() {
+    public String getIdRepoNombre() {//ayuda a identificar el panel con el repositorio
         return idRepoNombre;
     }
 
@@ -46,15 +44,14 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, objSituacion.getMensaje(), "Repositorio Invalido",
                     JOptionPane.WARNING_MESSAGE);
         }
-        setSituacionDto(objSituacion);
+        //falta enviar el estado del enum
         if (objSituacion.getTipoEnum() == EstadoEnum.OK) {
             this.ramaLocalArea.setRamaLocal(response.getRamasLocales(), objSituacion);
             this.ramaRemotoOrigin.setRamaRemotos(response.getRamasRemotas(), objSituacion);
         }
     }
 
-    // ayuda para volver actualizar las ramas
-    private void ExecuteVisual() {
+    private void ExecuteVisual() {// ayuda para volver actualizar las ramas
         this.controlador.ProcesoInicioGit(false).thenAccept(this::ResultadoGit);
     }
 

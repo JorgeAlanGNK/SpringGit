@@ -1,13 +1,17 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.BaseModelo;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import java.util.concurrent.CompletableFuture;
 
 public class ControladorFormulario extends Controlador<IniciadorUsuario, ModeloRepositorio> {
 
     //se implementa la capa de negocio
+    private ControladorFormulario() {
+        super(null);
+        throw new UnsupportedOperationException("No se puede instanciar el controlador sin un contrato");
+    }
+
     public ControladorFormulario(IniciadorUsuario menuActual) {
         super(menuActual);
     }
