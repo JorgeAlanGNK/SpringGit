@@ -1,19 +1,16 @@
 package com.jorge_alan.spring_git_mvc.negocios;
 
-import com.jorge_alan.spring_git_mvc.datos.CapaDatos.IGitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.CapaDatos.OperacionUsuario;
+import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
 
 public abstract class ActualizadorMenu {
 
     //capa de datos
     private IGitVisualizacion comandos;
-    private OperacionUsuario aceptacionComando;
     //repositorio a consultar
     private String repositorio;
 
-    public ActualizadorMenu(IGitVisualizacion comandos, OperacionUsuario aceptacionComando) {
+    public ActualizadorMenu(IGitVisualizacion comandos) {
         this.comandos = comandos;
-        this.aceptacionComando = aceptacionComando;
     }
 
     public abstract void EnviarRepositorio(String repositorio);

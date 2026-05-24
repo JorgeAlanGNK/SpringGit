@@ -3,8 +3,7 @@ package com.jorge_alan.spring_git_mvc.negocios;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.jorge_alan.spring_git_mvc.datos.CapaDatos.IGitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.CapaDatos.OperacionUsuario;
+import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RemotoModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
@@ -14,12 +13,11 @@ import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class IniciadorUsuario extends ActualizadorMenu {
 
-    public IniciadorUsuario(IGitVisualizacion comandos, OperacionUsuario aceptacionComando) {
-        super(comandos, aceptacionComando);
+    public IniciadorUsuario(IGitVisualizacion comandos) {
+        super(comandos);
     }
 
     @Override

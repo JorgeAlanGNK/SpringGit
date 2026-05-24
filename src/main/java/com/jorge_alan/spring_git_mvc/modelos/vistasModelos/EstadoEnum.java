@@ -7,7 +7,9 @@ public enum EstadoEnum {
     WARNING(301),
     NOT_FOUND(404),
     NO_PERMISION(401),
+    UNKNOWN_ERROR(520),
     FORBIDDEN_ERROR(403);
+    
     private int numeroEstado;
 
     private EstadoEnum(int numeroEstado) {

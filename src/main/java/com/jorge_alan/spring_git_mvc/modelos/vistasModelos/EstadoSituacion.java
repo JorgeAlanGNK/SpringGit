@@ -7,6 +7,11 @@ public class EstadoSituacion {
     private EstadoEnum tipoEnum;
     private String mensaje;
 
+    public EstadoSituacion() {
+        mensaje = "Repositorio desconocido";
+        tipoEnum = EstadoEnum.UNKNOWN_ERROR;
+    }
+
     public EstadoEnum getTipoEnum() {
         return tipoEnum;
     }

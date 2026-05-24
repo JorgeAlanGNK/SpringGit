@@ -1,13 +1,12 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.google.common.base.Strings;
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
+import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import java.awt.Dimension;
 import javax.swing.JTextField;
-import static com.jorge_alan.spring_git_mvc.componentes.forms.FormApp.setSituacionDto;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import javax.swing.JOptionPane;
@@ -34,8 +33,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         ExecuteVisual();
     }
 
-    //ayuda a identificar el panel con el repositorio
-    public String getIdRepoNombre() {
+    public String getIdRepoNombre() {//ayuda a identificar el panel con el repositorio
         return idRepoNombre;
     }
 
@@ -46,15 +44,14 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, objSituacion.getMensaje(), "Repositorio Invalido",
                     JOptionPane.WARNING_MESSAGE);
         }
-        setSituacionDto(objSituacion);
+        //falta enviar el estado del enum
         if (objSituacion.getTipoEnum() == EstadoEnum.OK) {
             this.ramaLocalArea.setRamaLocal(response.getRamasLocales(), objSituacion);
             this.ramaRemotoOrigin.setRamaRemotos(response.getRamasRemotas(), objSituacion);
         }
     }
 
-    // ayuda para volver actualizar las ramas
-    private void ExecuteVisual() {
+    private void ExecuteVisual() {// ayuda para volver actualizar las ramas
         this.controlador.ProcesoInicioGit(false).thenAccept(this::ResultadoGit);
     }
 
@@ -86,7 +83,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -121,6 +118,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         stashAreaPanel = new com.jorge_alan.spring_git_mvc.componentes.customs.JTreeRamaStash();
         jPanel1 = new javax.swing.JPanel();
         contenido = new javax.swing.JPanel();
+        buttonDelete2 = new com.jorge_alan.spring_git_mvc.componentes.customs.ButtonDelete();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -392,20 +390,16 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         javax.swing.GroupLayout barraLayout = new javax.swing.GroupLayout(barra);
         barra.setLayout(barraLayout);
         barraLayout.setHorizontalGroup(
-                barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(barraLayout.createSequentialGroup()
-                                .addGap(0, 15, Short.MAX_VALUE)
-                                .addGroup(barraLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(stashesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334,
-                                                Short.MAX_VALUE)
-                                        .addComponent(remotosPanel, javax.swing.GroupLayout.Alignment.LEADING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                                        .addComponent(ramasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334,
-                                                Short.MAX_VALUE)
-                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(26, 26, 26)));
+            barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(barraLayout.createSequentialGroup()
+                .addGap(0, 29, Short.MAX_VALUE)
+                .addGroup(barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(stashesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(remotosPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(ramasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
+        );
         barraLayout.setVerticalGroup(
                 barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(barraLayout.createSequentialGroup()
@@ -435,14 +429,27 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
 
         contenido.setBackground(new java.awt.Color(0, 0, 255));
 
+        buttonDelete2.setForeground(new java.awt.Color(0, 0, 0));
+        buttonDelete2.setText("buttonDelete2");
+        buttonDelete2.setFirstColorPrimary(new java.awt.Color(255, 50, 50));
+        buttonDelete2.setSecondColorPrimary(new java.awt.Color(255, 0, 0));
+
         javax.swing.GroupLayout contenidoLayout = new javax.swing.GroupLayout(contenido);
         contenido.setLayout(contenidoLayout);
         contenidoLayout.setHorizontalGroup(
-                contenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 942, Short.MAX_VALUE));
+            contenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contenidoLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(buttonDelete2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(791, Short.MAX_VALUE))
+        );
         contenidoLayout.setVerticalGroup(
-                contenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1011, Short.MAX_VALUE));
+            contenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contenidoLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(buttonDelete2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(966, Short.MAX_VALUE))
+        );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -514,6 +521,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     private javax.swing.JPanel areaRemoto;
     private javax.swing.JPanel areaStash;
     private javax.swing.JPanel barra;
+    private com.jorge_alan.spring_git_mvc.componentes.customs.ButtonDelete buttonDelete2;
     private javax.swing.JTextField campoRama;
     private javax.swing.JTextField campoRemoto;
     private javax.swing.JTextField campoStash;
