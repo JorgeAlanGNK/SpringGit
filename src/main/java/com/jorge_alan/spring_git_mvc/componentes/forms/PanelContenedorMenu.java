@@ -1,13 +1,12 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.google.common.base.Strings;
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
+import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import java.awt.Dimension;
 import javax.swing.JTextField;
-import static com.jorge_alan.spring_git_mvc.componentes.forms.FormApp.setSituacionDto;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import javax.swing.JOptionPane;
@@ -21,46 +20,43 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     private String RAMA_STASH_TEXTO;
     private String RAMA_REMOTO_TEXTO;
     private ControladorFormulario controlador;
-    //se guarda el valor para realizar el método correspondiente
-    private java.awt.Dimension sizeRamaPanel;
-    private java.awt.Dimension sizeRemotosPanel;
-    private java.awt.Dimension sizeStashesPanel;
+    private String idRepoNombre;
     private ImagenEstatica extImagenes = new ImagenEstatica();
-    private ModeloRepositorio vistaRepo;
 
     public PanelContenedorMenu() {
         initComponents();
     }
 
-    public void Load(ControladorFormulario controlador, ModeloRepositorio vista) {
+    public void Load(ControladorFormulario controlador) {
         this.controlador = controlador;
-        this.vistaRepo = vista;
-        this.controlador.setModelo(vista);
+        this.idRepoNombre = controlador.getModelo().getRepositorioActual();
         ExecuteVisual();
     }
 
-    //ayuda para volver actualizar las ramas
-    private void ExecuteVisual() {
-        this.controlador.ProcesoInicioGit(false).thenAccept(result -> {
-            EstadoSituacion objSituacion = result.getSituacion();
-            this.vistaRepo.setRamasLocales(result.getRamasLocales());
-            this.vistaRepo.setRamasRemotas(result.getRamasRemotas());
-            this.vistaRepo.setStashes(result.getStashes());
-            this.vistaRepo.setRemotosUrl(result.getRemotosUrl());
-            this.vistaRepo.setActivo(result.isActivo());
-            this.vistaRepo.setRepositorios(result.getRepositorios());
-            if (objSituacion.getTipoEnum() == EstadoEnum.ERROR || objSituacion.getTipoEnum() == EstadoEnum.NOT_FOUND) {
-                JOptionPane.showMessageDialog(this, objSituacion.getMensaje(), "Repositorio Invalido", JOptionPane.WARNING_MESSAGE);
-            }
-            setSituacionDto(objSituacion);
-            this.controlador.setModelo(this.vistaRepo);
-            this.vistaRepo = this.controlador.getModelo();
-            this.ramaLocalArea.setRamaLocal(this.vistaRepo.getRamasLocales(), objSituacion);
-            this.ramaRemotoOrigin.setRamaRemotos(this.vistaRepo.getRamasRemotas(), objSituacion);
-        });
+    public String getIdRepoNombre() {//ayuda a identificar el panel con el repositorio
+        return idRepoNombre;
     }
 
-    private void TogglePanel(javax.swing.JPanel toggleCmp, javax.swing.JPanel parent, javax.swing.JButton btnAction, boolean isCollapse) {
+    private void ResultadoGit(ModeloRepositorio response) {
+        EstadoSituacion objSituacion = response.getSituacion();
+        this.controlador.setModelo(response);
+        if (objSituacion.getTipoEnum() == EstadoEnum.ERROR || objSituacion.getTipoEnum() == EstadoEnum.NOT_FOUND) {
+            JOptionPane.showMessageDialog(this, objSituacion.getMensaje(), "Repositorio Invalido",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+        //falta enviar el estado del enum
+        if (objSituacion.getTipoEnum() == EstadoEnum.OK) {
+            this.ramaLocalArea.setRamaLocal(response.getRamasLocales(), objSituacion);
+            this.ramaRemotoOrigin.setRamaRemotos(response.getRamasRemotas(), objSituacion);
+        }
+    }
+
+    private void ExecuteVisual() {// ayuda para volver actualizar las ramas
+        this.controlador.ProcesoInicioGit(false).thenAccept(this::ResultadoGit);
+    }
+
+    private void TogglePanel(javax.swing.JPanel toggleCmp, javax.swing.JPanel parent, javax.swing.JButton btnAction,
+            boolean isCollapse) {
         if (isCollapse) {
             btnAction.setIcon(extImagenes.GenerarIcono(ConstanteIcono.ICONO_BTN_UP, 20, 20));
         } else {
@@ -86,6 +82,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -121,6 +118,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         stashAreaPanel = new com.jorge_alan.spring_git_mvc.componentes.customs.JTreeRamaStash();
         jPanel1 = new javax.swing.JPanel();
         contenido = new javax.swing.JPanel();
+        buttonDelete2 = new com.jorge_alan.spring_git_mvc.componentes.customs.ButtonDelete();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -371,7 +369,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         barraLayout.setHorizontalGroup(
             barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(barraLayout.createSequentialGroup()
-                .addGap(0, 15, Short.MAX_VALUE)
+                .addGap(0, 29, Short.MAX_VALUE)
                 .addGroup(barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(stashesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                     .addComponent(remotosPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
@@ -405,15 +403,26 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
 
         contenido.setBackground(new java.awt.Color(0, 0, 255));
 
+        buttonDelete2.setForeground(new java.awt.Color(0, 0, 0));
+        buttonDelete2.setText("buttonDelete2");
+        buttonDelete2.setFirstColorPrimary(new java.awt.Color(255, 50, 50));
+        buttonDelete2.setSecondColorPrimary(new java.awt.Color(255, 0, 0));
+
         javax.swing.GroupLayout contenidoLayout = new javax.swing.GroupLayout(contenido);
         contenido.setLayout(contenidoLayout);
         contenidoLayout.setHorizontalGroup(
             contenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 942, Short.MAX_VALUE)
+            .addGroup(contenidoLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(buttonDelete2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(791, Short.MAX_VALUE))
         );
         contenidoLayout.setVerticalGroup(
             contenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1011, Short.MAX_VALUE)
+            .addGroup(contenidoLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(buttonDelete2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(966, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -426,57 +435,56 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         add(contenido, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void accionRamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionRamaActionPerformed
+    private void accionRamaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_accionRamaActionPerformed
         boolean cambiador = !this.toggleRama;
         javax.swing.JPanel collapse = this.collapseRama;
         javax.swing.JPanel parent = this.ramasPanel;
         javax.swing.JButton accionador = this.accionRama;
         TogglePanel(collapse, parent, accionador, cambiador);
         this.toggleRama = cambiador;
-    }//GEN-LAST:event_accionRamaActionPerformed
+    }// GEN-LAST:event_accionRamaActionPerformed
 
-    private void accionRemotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionRemotoActionPerformed
+    private void accionRemotoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_accionRemotoActionPerformed
         boolean cambiador = !this.toggleRemoto;
         javax.swing.JPanel collapse = this.collapseRemoto;
         javax.swing.JPanel parent = this.remotosPanel;
         javax.swing.JButton accionador = this.accionRemoto;
         TogglePanel(collapse, parent, accionador, cambiador);
         this.toggleRemoto = cambiador;
-    }//GEN-LAST:event_accionRemotoActionPerformed
+    }// GEN-LAST:event_accionRemotoActionPerformed
 
-    private void accionStashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionStashActionPerformed
+    private void accionStashActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_accionStashActionPerformed
         boolean cambiador = !this.toggleStash;
         javax.swing.JPanel collapse = this.collapseStash;
         javax.swing.JPanel parent = this.stashesPanel;
         javax.swing.JButton accionador = this.accionStash;
         TogglePanel(collapse, parent, accionador, cambiador);
         this.toggleStash = cambiador;
-    }//GEN-LAST:event_accionStashActionPerformed
+    }// GEN-LAST:event_accionStashActionPerformed
 
-    private void campoRamaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoRamaFocusGained
+    private void campoRamaFocusGained(java.awt.event.FocusEvent evt) {// GEN-FIRST:event_campoRamaFocusGained
         this.RAMA_LOCAL_TEXTO = GuardarTexto(campoRama);
-    }//GEN-LAST:event_campoRamaFocusGained
+    }// GEN-LAST:event_campoRamaFocusGained
 
-    private void campoRamaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoRamaFocusLost
+    private void campoRamaFocusLost(java.awt.event.FocusEvent evt) {// GEN-FIRST:event_campoRamaFocusLost
         CargarPendiente(this.campoRama, this.RAMA_LOCAL_TEXTO);
-    }//GEN-LAST:event_campoRamaFocusLost
+    }// GEN-LAST:event_campoRamaFocusLost
 
-    private void campoRemotoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoRemotoFocusGained
+    private void campoRemotoFocusGained(java.awt.event.FocusEvent evt) {// GEN-FIRST:event_campoRemotoFocusGained
         this.RAMA_REMOTO_TEXTO = GuardarTexto(this.campoRemoto);
-    }//GEN-LAST:event_campoRemotoFocusGained
+    }// GEN-LAST:event_campoRemotoFocusGained
 
-    private void campoRemotoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoRemotoFocusLost
+    private void campoRemotoFocusLost(java.awt.event.FocusEvent evt) {// GEN-FIRST:event_campoRemotoFocusLost
         CargarPendiente(this.campoRemoto, this.RAMA_REMOTO_TEXTO);
-    }//GEN-LAST:event_campoRemotoFocusLost
+    }// GEN-LAST:event_campoRemotoFocusLost
 
-    private void campoStashFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoStashFocusGained
+    private void campoStashFocusGained(java.awt.event.FocusEvent evt) {// GEN-FIRST:event_campoStashFocusGained
         this.RAMA_STASH_TEXTO = GuardarTexto(this.campoStash);
-    }//GEN-LAST:event_campoStashFocusGained
+    }// GEN-LAST:event_campoStashFocusGained
 
-    private void campoStashFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoStashFocusLost
+    private void campoStashFocusLost(java.awt.event.FocusEvent evt) {// GEN-FIRST:event_campoStashFocusLost
         CargarPendiente(this.campoStash, this.RAMA_STASH_TEXTO);
-    }//GEN-LAST:event_campoStashFocusLost
-
+    }// GEN-LAST:event_campoStashFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu MenuOperaciones;
@@ -487,6 +495,7 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     private javax.swing.JPanel areaRemoto;
     private javax.swing.JPanel areaStash;
     private javax.swing.JPanel barra;
+    private com.jorge_alan.spring_git_mvc.componentes.customs.ButtonDelete buttonDelete2;
     private javax.swing.JTextField campoRama;
     private javax.swing.JTextField campoRemoto;
     private javax.swing.JTextField campoStash;

@@ -1,4 +1,4 @@
-package com.jorge_alan.spring_git_mvc.datos;
+package com.jorge_alan.spring_git_mvc.datos.buffers;
 
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
