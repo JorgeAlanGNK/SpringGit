@@ -40,7 +40,6 @@ public class FormApp extends javax.swing.JFrame {
         if (navegador == null) {
             return new ConstruccionNavegador(app);
         }
-        navegador.setApp(app);
         return navegador;
     }
 
