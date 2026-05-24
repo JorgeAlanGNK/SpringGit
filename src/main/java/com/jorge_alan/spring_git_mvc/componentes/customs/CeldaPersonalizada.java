@@ -6,8 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
+
 import javax.swing.Icon;
 
+import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 public class CeldaPersonalizada extends javax.swing.JPanel {
 //celda personalizada para un JTabbedPane
     //default Color show
@@ -17,6 +19,7 @@ public class CeldaPersonalizada extends javax.swing.JPanel {
     //selection TabColor
     private Color ColorSelectionFirst = new Color(0, 97, 255);
     private Color ColorSelectionSecond = new Color(96, 239, 255);
+    private ConstruccionNavegador navegador;
 
     private Icon representacionIcono;
     private boolean isSelected;
@@ -24,12 +27,11 @@ public class CeldaPersonalizada extends javax.swing.JPanel {
     public CeldaPersonalizada() {//no tocar, netbeans lo detecta como default
         initComponents();
     }
-
-    public CeldaPersonalizada(boolean isSelected) {
-        this.isSelected = isSelected;
-        initComponents();
-    }
     
+    public void setNavegador(ConstruccionNavegador navegador) {
+        this.navegador = navegador;
+    }
+
     public void setTitle(String text) {
         this.iconoLeaf.setText(text);
     }
@@ -76,27 +78,33 @@ public class CeldaPersonalizada extends javax.swing.JPanel {
         iconoLeaf.setForeground(new java.awt.Color(0, 0, 0));
         iconoLeaf.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        iconoCerrar.addActionListener(this::iconoCerrarActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(iconoLeaf, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(iconoCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(iconoLeaf, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(iconoCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(iconoLeaf, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
                     .addComponent(iconoCerrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void iconoCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iconoCerrarActionPerformed
+        
+    }//GEN-LAST:event_iconoCerrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

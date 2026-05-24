@@ -54,6 +54,13 @@
             <artifactId>svg-salamander</artifactId>
             <version>1.0</version>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/com.github.javakeyring/java-keyring -->
+        <dependency>
+            <groupId>com.github.javakeyring</groupId>
+            <artifactId>java-keyring</artifactId>
+            <version>1.0.4</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>unknown.binary</groupId>
             <artifactId>AbsoluteLayout</artifactId>

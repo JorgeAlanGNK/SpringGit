@@ -2,10 +2,8 @@ package com.jorge_alan.spring_git_mvc.componentes.customs;
 
 import com.google.common.collect.Queues;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
-import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtensionImpl;
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
+import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 
 import java.awt.Component;
 import java.util.List;

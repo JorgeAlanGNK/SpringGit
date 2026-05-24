@@ -1,6 +1,5 @@
 package com.jorge_alan.spring_git_mvc.modelos;
 
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
 import java.util.Queue;
 import javax.swing.Icon;
 import javax.swing.tree.DefaultMutableTreeNode;
