@@ -1,20 +1,12 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.google.common.base.Strings;
-<<<<<<< HEAD
-import com.jorge_alan.spring_git_mvc.componentes.Diseno.ConstanteIcono;
-=======
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
->>>>>>> DEV
 
 import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import java.awt.Dimension;
 import javax.swing.JTextField;
-<<<<<<< HEAD
-import static com.jorge_alan.spring_git_mvc.componentes.forms.FormApp.setSituacionDto;
-=======
->>>>>>> DEV
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import javax.swing.JOptionPane;
@@ -30,43 +22,11 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     private ControladorFormulario controlador;
     private String idRepoNombre;
     private ImagenEstatica extImagenes = new ImagenEstatica();
-<<<<<<< HEAD
-    private ModeloRepositorio vistaRepo;
-=======
->>>>>>> DEV
 
     public PanelContenedorMenu() {
         initComponents();
     }
 
-<<<<<<< HEAD
-    public void Load(ControladorFormulario controlador, ModeloRepositorio vista) {
-        this.controlador = controlador;
-        this.vistaRepo = vista;
-        this.controlador.setModelo(vista);
-        ExecuteVisual();
-    }
-
-    //ayuda para volver actualizar las ramas
-    private void ExecuteVisual() {
-        this.controlador.ProcesoInicioGit(false).thenAccept(result -> {
-            EstadoSituacion objSituacion = result.getSituacion();
-            this.vistaRepo.setRamasLocales(result.getRamasLocales());
-            this.vistaRepo.setRamasRemotas(result.getRamasRemotas());
-            this.vistaRepo.setStashes(result.getStashes());
-            this.vistaRepo.setRemotosUrl(result.getRemotosUrl());
-            this.vistaRepo.setActivo(result.isActivo());
-            this.vistaRepo.setRepositorios(result.getRepositorios());
-            if (objSituacion.getTipoEnum() == EstadoEnum.ERROR || objSituacion.getTipoEnum() == EstadoEnum.NOT_FOUND) {
-                JOptionPane.showMessageDialog(this, objSituacion.getMensaje(), "Repositorio Invalido", JOptionPane.WARNING_MESSAGE);
-            }
-            setSituacionDto(objSituacion);
-            this.controlador.setModelo(this.vistaRepo);
-            this.vistaRepo = this.controlador.getModelo();
-            this.ramaLocalArea.setRamaLocal(this.vistaRepo.getRamasLocales(), objSituacion);
-            this.ramaRemotoOrigin.setRamaRemotos(this.vistaRepo.getRamasRemotas(), objSituacion);
-        });
-=======
     public void Load(ControladorFormulario controlador) {
         this.controlador = controlador;
         this.idRepoNombre = controlador.getModelo().getRepositorioActual();
@@ -89,7 +49,6 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
             this.ramaLocalArea.setRamaLocal(response.getRamasLocales(), objSituacion);
             this.ramaRemotoOrigin.setRamaRemotos(response.getRamasRemotas(), objSituacion);
         }
->>>>>>> DEV
     }
 
     private void ExecuteVisual() {// ayuda para volver actualizar las ramas
