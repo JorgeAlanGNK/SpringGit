@@ -19,11 +19,16 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemSeleccionarRepositorio">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Agregar Repositorio"/>
+                <Property name="text" type="java.lang.String" value="Abrir Repositorio"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemSeleccionarRepositorioActionPerformed"/>
               </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ingresar un Repositorio"/>
+              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>

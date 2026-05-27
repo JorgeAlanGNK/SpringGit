@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
+import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 
 public class DaoGitUsuario implements IDaoGitUsuario {
     
@@ -19,9 +20,11 @@ public class DaoGitUsuario implements IDaoGitUsuario {
     }
 
     @Override
-    public CompletableFuture<Boolean> IngresarToken() {//aqui se ponen los modelos
-        // TODO Auto-generated method stub
-        return info.RegistroRepositorio(null);
+    public CompletableFuture<Boolean> IngresarToken(String gitNombreLocal, String gitNombreRemoto, Integer esActivo,
+            Integer idToken) {
+        GitRepositorio modelo = new GitRepositorio(gitNombreLocal, gitNombreRemoto, esActivo, idToken);
+        var tarea = info.RegistroRepositorio(modelo);
+        return tarea;
     }
     
 }

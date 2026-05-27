@@ -9,5 +9,5 @@ public interface IDaoGitUsuario {
 
     List<GitToken> TokenActivos();
 
-    CompletableFuture<Boolean> IngresarToken();
+    CompletableFuture<Boolean> IngresarToken(String gitNombreLocal, String gitNombreRemoto , Integer esActivo, Integer idToken);
 }

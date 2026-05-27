@@ -1,6 +1,7 @@
 package com.jorge_alan.spring_git_mvc.modelos.consola;
 
 public class StashModelo {
+    
     private String stash;
     private int indexStash;
 

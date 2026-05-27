@@ -1,6 +1,7 @@
 package com.jorge_alan.spring_git_mvc.modelos.consola;
 
 public class RemotoModelo {
+    
     private String fetch;
     private String push;
 
