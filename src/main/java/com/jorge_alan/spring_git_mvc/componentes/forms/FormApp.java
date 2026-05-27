@@ -9,8 +9,7 @@ import javax.swing.JOptionPane;
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.GitVisualizacion;
-import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.DaoGitUsuario;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import javax.swing.JLayeredPane;
 
@@ -46,7 +45,8 @@ public class FormApp extends javax.swing.JFrame {
     private static IniciadorUsuario CargaInicio() {
         if (manejoUsuario == null) {
             return new IniciadorUsuario(
-                    new GitVisualizacion());
+                    new GitVisualizacion(),
+                    new DaoGitUsuario());
         }
         return manejoUsuario;
     }
@@ -196,7 +196,7 @@ public class FormApp extends javax.swing.JFrame {
         }
     }
 
-    //Propiedades de solo componentes
+    // Propiedades de solo componentes
     public com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom getTabbedPaneCustom1() {
         return tabbedPaneCustom1;
     }

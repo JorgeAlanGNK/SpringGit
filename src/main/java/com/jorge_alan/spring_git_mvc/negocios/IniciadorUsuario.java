@@ -4,10 +4,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.IDaoGitUsuario;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RemotoModelo;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
+import com.jorge_alan.spring_git_mvc.negocios.bridge.ActualizadorMenu;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import java.util.List;
@@ -16,8 +18,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class IniciadorUsuario extends ActualizadorMenu {
 
-    public IniciadorUsuario(IGitVisualizacion comandos) {
-        super(comandos);
+    public IniciadorUsuario(IGitVisualizacion comandos, IDaoGitUsuario daoGitUsuario) {
+        super(comandos, daoGitUsuario);
     }
 
     @Override
@@ -74,7 +76,6 @@ public class IniciadorUsuario extends ActualizadorMenu {
             return false;
         });
     }
-
     ;
 
     public CompletableFuture<ModeloRepositorio> RegistroRepoLocal(String dir) {

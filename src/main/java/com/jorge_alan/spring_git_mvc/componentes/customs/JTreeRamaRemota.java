@@ -21,7 +21,6 @@ public class JTreeRamaRemota extends JTree {
     
     private Set<RamaModelo> ramaRemotos;
     private final IconoExtension extIcono = new IconoExtensionImpl();
-    private EstadoSituacion situacionUsuario;
     private final EstructuraNavegacion navegacion = new EstructuraNavegacion();
     
     public JTreeRamaRemota() {
@@ -58,14 +57,9 @@ public class JTreeRamaRemota extends JTree {
     public Set<RamaModelo> getRamaRemotos() {
         return ramaRemotos;
     }
-    
-    public EstadoSituacion getSituacionUsuario() {
-        return situacionUsuario;
-    }
 
-    public void setRamaRemotos(Set<RamaModelo> ramaRemotos, EstadoSituacion situacionUsuario) {
+    public void setRamaRemotos(Set<RamaModelo> ramaRemotos) {
         this.ramaRemotos = ramaRemotos;
-        this.situacionUsuario = situacionUsuario;
         RellenarRemotos();
     }
 

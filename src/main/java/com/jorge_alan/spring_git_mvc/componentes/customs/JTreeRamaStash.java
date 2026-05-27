@@ -65,7 +65,7 @@ public class JTreeRamaStash extends JTree {
     }
 
     private void RellenarStashes() {
-        if (this.situacionUsuario.getTipoEnum() == EstadoEnum.OK && !this.stashModelo.isEmpty()) {
+        if (!this.stashModelo.isEmpty()) {
             DefaultTreeModel modeloActual = (DefaultTreeModel) getModel();
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) modeloActual.getRoot();
             Queue<String> items = Queues.newArrayDeque();

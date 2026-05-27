@@ -1,7 +1,5 @@
-package com.jorge_alan.spring_git_mvc.datos;
+package com.jorge_alan.spring_git_mvc.datos.sql_extension;
 
-import com.google.common.collect.Lists;
-import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,16 +8,14 @@ import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.google.common.collect.Lists;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 
 public class ConsultaRepos implements UsuarioGitDB {
 

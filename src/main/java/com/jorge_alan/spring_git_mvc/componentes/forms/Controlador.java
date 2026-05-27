@@ -1,6 +1,6 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
-import com.jorge_alan.spring_git_mvc.negocios.ActualizadorMenu;
+import com.jorge_alan.spring_git_mvc.negocios.bridge.ActualizadorMenu;
 
 //K se encarga de la capa de negocio
 //T se encarga de trabajar con el modelo
