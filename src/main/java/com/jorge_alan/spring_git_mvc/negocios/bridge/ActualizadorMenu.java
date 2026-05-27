@@ -1,16 +1,19 @@
-package com.jorge_alan.spring_git_mvc.negocios;
+package com.jorge_alan.spring_git_mvc.negocios.bridge;
 
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.IDaoGitUsuario;
 
 public abstract class ActualizadorMenu {
 
     //capa de datos
     private IGitVisualizacion comandos;
+    private IDaoGitUsuario daoRepositorio;
     //repositorio a consultar
     private String repositorio;
 
-    public ActualizadorMenu(IGitVisualizacion comandos) {
+    public ActualizadorMenu(IGitVisualizacion comandos, IDaoGitUsuario daoRepositorio) {
         this.comandos = comandos;
+        this.daoRepositorio = daoRepositorio;
     }
 
     public abstract void EnviarRepositorio(String repositorio);

@@ -1,7 +1,6 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.BaseModelo;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import java.util.concurrent.CompletableFuture;
 
