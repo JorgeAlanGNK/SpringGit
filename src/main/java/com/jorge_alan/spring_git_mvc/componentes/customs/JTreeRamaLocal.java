@@ -21,7 +21,6 @@ public class JTreeRamaLocal extends JTree {
 
     private Set<RamaModelo> ramaLocal;
     private List<String> carpetas;
-    private EstadoSituacion situacionUsuario;
     private final EstructuraNavegacion navegacion = new EstructuraNavegacion();
     private ImagenEstatica imagenes = new ImagenEstatica();
     
@@ -58,7 +57,7 @@ public class JTreeRamaLocal extends JTree {
         return ramaLocal;
     }
 
-    public void setRamaLocal(Set<RamaModelo> ramaLocal, EstadoSituacion response) {
+    public void setRamaLocal(Set<RamaModelo> ramaLocal) {
         this.ramaLocal = ramaLocal;
         RellenarRamas();
     }
