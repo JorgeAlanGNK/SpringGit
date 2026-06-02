@@ -2,7 +2,7 @@ package com.jorge_alan.spring_git_mvc.componentes.customs;
 
 import com.google.common.collect.Queues;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
-import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
+import com.jorge_alan.spring_git_mvc.componentes.extension.EstructuraNavegacion;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 
 import java.awt.Component;
@@ -12,7 +12,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 

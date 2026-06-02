@@ -1,7 +1,7 @@
 package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
-import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
 
 public class ModalTokenUrl extends javax.swing.JDialog {
     
