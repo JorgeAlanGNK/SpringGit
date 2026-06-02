@@ -3,7 +3,7 @@ package com.jorge_alan.spring_git_mvc.componentes.forms;
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 
-import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import java.awt.Dimension;
 import javax.swing.JTextField;
