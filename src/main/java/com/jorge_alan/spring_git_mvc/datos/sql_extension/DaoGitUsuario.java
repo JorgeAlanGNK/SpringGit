@@ -20,7 +20,7 @@ public class DaoGitUsuario implements IDaoGitUsuario {
     }
 
     @Override
-    public CompletableFuture<Boolean> IngresarToken(String gitNombreLocal, String gitNombreRemoto, Integer esActivo,
+    public CompletableFuture<Boolean> IngresarRepoLocal(String gitNombreLocal, String gitNombreRemoto, Integer esActivo,
             Integer idToken) {
         GitRepositorio modelo = new GitRepositorio(gitNombreLocal, gitNombreRemoto, esActivo, idToken);
         var tarea = info.RegistroRepositorio(modelo);

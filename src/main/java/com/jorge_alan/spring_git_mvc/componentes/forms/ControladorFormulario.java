@@ -46,5 +46,17 @@ public class ControladorFormulario extends Controlador<IniciadorUsuario, ModeloR
         negocio.EnviarRepositorio(repositorio);//necesario para revisar
         return negocio.ExisteRemotoUrl();
     }
+    
+    public CompletableFuture<Boolean> IngresarRepositorio(String repositorio) {
+        IniciadorUsuario negocio = getControladorActual();
+        negocio.EnviarRepositorio(repositorio);
+        return negocio.RegistroRepoLocal(repositorio, null, false);
+    }
+
+    public CompletableFuture<Boolean> IngresarRepositorio(String repositorio, boolean activarRemoto) {
+        IniciadorUsuario negocio = getControladorActual();
+        negocio.EnviarRepositorio(repositorio);
+        return negocio.RegistroRepoLocal(repositorio, null, activarRemoto);
+    }
 
 }

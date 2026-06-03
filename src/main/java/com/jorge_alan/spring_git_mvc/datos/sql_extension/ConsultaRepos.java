@@ -125,15 +125,15 @@ public class ConsultaRepos implements UsuarioGitDB {
     @Override
     public CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio) {
         String query = "INSERT INTO GitRepositorios\n" + //
-                        "(git_nombre_local, git_nombre_url, es_activo, id_token)\n" + //
-                        "VALUES(?, ?, ?, ?);";
-        return CompletableFuture.supplyAsync(() -> {
+                "(git_nombre_local, git_nombre_url, es_activo, id_token)\n" + //
+                "VALUES(?, ?, ?, ?);";
+        Supplier<CompletableFuture<Boolean>> execute = () -> CompletableFuture.supplyAsync(() -> {
             Supplier<List<ParamValue>> valores = () -> Lists.newArrayList(
                     new ParamValue("git_nombre_local", repositorio.getGit_nombre_local(), JDBCType.VARCHAR),
                     new ParamValue("git_nombre_url", repositorio.getGit_nombre_url(), JDBCType.VARCHAR),
                     new ParamValue("es_activo", repositorio.getEs_activo(), JDBCType.INTEGER),
                     new ParamValue("id_token", repositorio.getId_token(), JDBCType.INTEGER));
-            try(Connection conn = Database()) {
+            try (Connection conn = Database()) {
                 boolean executable = UpdateQuery(conn, query, valores);
                 return executable;
             } catch (Exception ex) {
@@ -144,6 +144,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             }
             return false;
         });
+        return execute.get();
     }
 
 }

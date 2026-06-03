@@ -31,12 +31,12 @@ public class ModalTokenUrl extends javax.swing.JDialog {
         activarTokenCheck = new javax.swing.JCheckBox();
         descToken = new javax.swing.JLabel();
         fechaDesc = new javax.swing.JLabel();
-        tokenPathGit = new javax.swing.JPasswordField();
         formatDate = new javax.swing.JFormattedTextField();
         descGeneral = new javax.swing.JLabel();
-        campoDescGeneral = new javax.swing.JTextField();
         descUrlRemoto = new javax.swing.JLabel();
-        campoUrlRemoto = new javax.swing.JTextField();
+        campoUrlRemoto = new com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion();
+        campoEdicion1 = new com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion();
+        campoEdicion2 = new com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
@@ -72,48 +72,55 @@ public class ModalTokenUrl extends javax.swing.JDialog {
         descUrlRemoto.setText("Url Remoto:");
         descUrlRemoto.setVisible(activarUrlRemoto);
 
-        campoUrlRemoto.setVisible(activarUrlRemoto);
+        campoUrlRemoto.setText("campoEdicion1");
+
+        campoEdicion1.setText("campoEdicion1");
+
+        campoEdicion2.setText("campoEdicion2");
 
         javax.swing.GroupLayout panelTokenLayout = new javax.swing.GroupLayout(panelToken);
         panelToken.setLayout(panelTokenLayout);
         panelTokenLayout.setHorizontalGroup(
             panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelTokenLayout.createSequentialGroup()
-                .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelTokenLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(etiquetaDescripcion))
-                    .addGroup(panelTokenLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(activarTokenCheck)))
-                .addContainerGap(47, Short.MAX_VALUE))
-            .addGroup(panelTokenLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelTokenLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTokenLayout.createSequentialGroup()
                         .addComponent(btnAceptar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCancelar)
-                        .addGap(73, 73, 73))
+                        .addGap(68, 68, 68))
                     .addGroup(panelTokenLayout.createSequentialGroup()
-                        .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(panelTokenLayout.createSequentialGroup()
+                                    .addComponent(descUrlRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(campoUrlRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelTokenLayout.createSequentialGroup()
+                                    .addComponent(fechaDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(formatDate, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(panelTokenLayout.createSequentialGroup()
-                                .addComponent(fechaDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(formatDate, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelTokenLayout.createSequentialGroup()
-                                .addComponent(descToken, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(81, 81, 81)
-                                .addComponent(tokenPathGit, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelTokenLayout.createSequentialGroup()
-                                .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(descGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(descUrlRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(40, 40, 40)
-                                .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(campoDescGeneral)
-                                    .addComponent(campoUrlRemoto))))
+                                .addComponent(descGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(campoEdicion1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(panelTokenLayout.createSequentialGroup()
+                .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(panelTokenLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(descToken, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(campoEdicion2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelTokenLayout.createSequentialGroup()
+                            .addGap(20, 20, 20)
+                            .addComponent(etiquetaDescripcion))
+                        .addGroup(panelTokenLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(activarTokenCheck))))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         panelTokenLayout.setVerticalGroup(
             panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,8 +129,8 @@ public class ModalTokenUrl extends javax.swing.JDialog {
                 .addComponent(etiquetaDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(descToken)
-                    .addComponent(tokenPathGit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(campoEdicion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(descToken, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fechaDesc)
@@ -131,18 +138,18 @@ public class ModalTokenUrl extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(descGeneral)
-                    .addComponent(campoDescGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(campoEdicion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(campoUrlRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(descUrlRemoto))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(descUrlRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(campoUrlRemoto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
                 .addComponent(activarTokenCheck)
-                .addGap(18, 18, 18)
-                .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCancelar)
-                    .addComponent(btnAceptar))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelTokenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAceptar)
+                    .addComponent(btnCancelar))
+                .addGap(17, 17, 17))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -150,11 +157,11 @@ public class ModalTokenUrl extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(239, Short.MAX_VALUE)
+                .addContainerGap(273, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelToken, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(areaLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(187, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,8 +169,8 @@ public class ModalTokenUrl extends javax.swing.JDialog {
                 .addGap(24, 24, 24)
                 .addComponent(areaLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelToken, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelToken, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -198,8 +205,9 @@ public class ModalTokenUrl extends javax.swing.JDialog {
     private javax.swing.JPanel areaLogo;
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JTextField campoDescGeneral;
-    private javax.swing.JTextField campoUrlRemoto;
+    private com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion campoEdicion1;
+    private com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion campoEdicion2;
+    private com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion campoUrlRemoto;
     private javax.swing.JLabel descGeneral;
     private javax.swing.JLabel descToken;
     private javax.swing.JLabel descUrlRemoto;
@@ -208,6 +216,5 @@ public class ModalTokenUrl extends javax.swing.JDialog {
     private javax.swing.JFormattedTextField formatDate;
     private javax.swing.JLabel iconoGit;
     private javax.swing.JPanel panelToken;
-    private javax.swing.JPasswordField tokenPathGit;
     // End of variables declaration//GEN-END:variables
 }

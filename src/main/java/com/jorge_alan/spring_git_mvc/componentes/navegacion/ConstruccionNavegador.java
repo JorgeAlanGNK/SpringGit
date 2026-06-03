@@ -35,9 +35,8 @@ public class ConstruccionNavegador {
     private int cantidadPaneles;
     private Set<String> rutas;
     private ControladorFormulario controlador;// no se puede instanciar, intentar cargar el controlador desde el formApp
-    private IConsumerTabs consumerDelete;
-    private IConsumerTabs consumerUpdate;
-    private IConsumerTabs consumerAdd;
+    //verificar si esta mostrando un PanelContenedorMenu
+    private boolean muestraRepos;
 
     public ConstruccionNavegador(FormApp app) {
         this.app = app;
@@ -45,9 +44,6 @@ public class ConstruccionNavegador {
         this.modelosRepositorios = Maps.newHashMap();
         this.panelNavegador = Lists.newArrayList();
         this.cantidadPaneles = 0;
-        this.consumerDelete = new DeleteTab(panelNavegador, app);
-        this.consumerUpdate = new UpdateTab(panelNavegador, app);
-        this.consumerAdd = new AddTab(panelNavegador, app);
     }
 
     // Operaciones para un navegador principal
@@ -109,9 +105,10 @@ public class ConstruccionNavegador {
             rutas.add(nuevoEnlace);
             PanelContenedorMenu nuevoPanel = new PanelContenedorMenu();
             nuevoPanel.LoadAsync(this.controlador).thenAccept((response) -> {// los metodos asincronos deben de devolver
-                                                                             // el valor
+                // el valor
                 SwingUtilities.invokeLater(() -> {
                     if (response.getSituacion().getTipoEnum() == EstadoEnum.OK) {
+                        //cambiar y cargar el repositorio actual
                         nuevoPanel.getRamaLocalArea().setRamaLocal(response.getRamasLocales());
                         nuevoPanel.getRamaRemotoOrigin().setRamaRemotos(response.getRamasRemotas());
                         nuevoPanel.getStashAreaPanel().setStashModelo(response.getStashes());
@@ -121,6 +118,7 @@ public class ConstruccionNavegador {
                         this.app.getTabbedPaneCustom1().addTab(tempEnlace, nuevoPanel);
                         CardLayout cardLayout = (CardLayout) app.getVariedadLayoutPanel().getLayout();
                         cardLayout.show(app.getVariedadLayoutPanel(), CardConstante.CARD_TABBED_PANE_CUSTOM);
+                        muestraRepos = app.getTabbedPaneCustom1().getTabCount() > 0;
                         app.repaint();
                         app.revalidate();
                     } else {
@@ -144,30 +142,6 @@ public class ConstruccionNavegador {
         modelo.setRepositorios(rutas);
         modelo.setRepositorioActual(ruta);
         return modelo;
-    }
-
-    public Component CambiarRepositorio(String nuevoRepositorio, String anteriorRepositorio) {// Actualiza el Tab
-        TabbedPaneCustom tabShow = app.getTabbedPaneCustom1();
-        int compIndex = app.getTabbedPaneCustom1().getTabCount();
-        PanelContenedorMenu menuActualizar = null;
-        for (int index = 0; index < compIndex; index++) {
-            menuActualizar = (PanelContenedorMenu) tabShow.getComponentAt(compIndex);
-            if (menuActualizar.getResultadoModelo().getRepositorioActual() == anteriorRepositorio) {
-                compIndex = index;
-                break;
-            }
-        }
-        if (menuActualizar == null) {
-            JOptionPane.showMessageDialog(app, "Repositorio invalido",
-                    String.format("No se ha podido encontrar el repositorio %s", anteriorRepositorio),
-                    JOptionPane.WARNING_MESSAGE);
-            return null;
-        }
-        ModeloRepositorio repo = menuActualizar.getResultadoModelo();
-        ControladorFormulario controladorActual = menuActualizar.getControlador();
-        repo.setRepositorioActual(nuevoRepositorio);
-        consumerUpdate.ConsumerTab(compIndex, menuActualizar, menuActualizar.LoadAsync(controladorActual));
-        return menuActualizar;
     }
 
     public void CerrarTab(String buscarRepo) {// Cierra el tab, pero no elimina el Tab
@@ -194,7 +168,16 @@ public class ConstruccionNavegador {
             if (menuRemover.getResultadoModelo().getRepositorioActual() == buscarRepo) {
                 tabShow.remove(menuRemover);
                 panelNavegador.remove(menuRemover);
+            }
+        }
+    }
 
+    public void ObtenerPanelSeleccionado() {
+        //aqui nos encargamos de ingresar el repositorio a SQlite
+        if (muestraRepos) {
+            PanelContenedorMenu menu_actual = app.getTabbedPaneCustom1().getSelectedTab();
+            ModeloRepositorio repo = menu_actual.getResultadoModelo();
+            if (repo.getSituacion().getTipoEnum() == EstadoEnum.OK) {
             }
         }
     }
@@ -216,109 +199,10 @@ public class ConstruccionNavegador {
         this.controlador = controlador;
     }
 
-    public static final class CardConstante {
+    private static final class CardConstante {
 
         public static final String CARD_MENU_SELECTION = "card3";
         public static final String CARD_TABBED_PANE_CUSTOM = "card2";
-    }
-
-    private interface IConsumerTabs {
-        void ConsumerTab(final int index, final PanelContenedorMenu pantalla,
-                CompletableFuture<ModeloRepositorio> asyncMethod);
-
-        int GetTabCount();
-    }
-
-    private static final class DeleteTab implements IConsumerTabs {
-
-        private List<PanelContenedorMenu> navegador;
-        private FormApp app;
-
-        public DeleteTab(List<PanelContenedorMenu> navegador, FormApp app) {
-            this.navegador = navegador;
-            this.app = app;
-        }
-
-        @Override
-        public void ConsumerTab(final int index, final PanelContenedorMenu pantalla,
-                CompletableFuture<ModeloRepositorio> asyncMethod) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'ConsumerTab'");
-        }
-
-        @Override
-        public int GetTabCount() {
-            return navegador.size();
-        }
-
-    }
-
-    private static final class UpdateTab implements IConsumerTabs {
-
-        private List<PanelContenedorMenu> navegador;
-        private FormApp app;
-
-        public UpdateTab(List<PanelContenedorMenu> navegador, FormApp app) {
-            this.navegador = navegador;
-            this.app = app;
-        }
-
-        @Override
-        public void ConsumerTab(final int index, final PanelContenedorMenu pantalla,
-                CompletableFuture<ModeloRepositorio> asyncMethod) {
-            asyncMethod.thenAccept((response) -> {
-                SwingUtilities.invokeLater(() -> {
-                    if (response.getSituacion().getTipoEnum() == EstadoEnum.OK) {
-                        pantalla.getRamaLocalArea().setRamaLocal(response.getRamasLocales());
-                        pantalla.getRamaRemotoOrigin().setRamaRemotos(response.getRamasRemotas());
-                        pantalla.getStashAreaPanel().setStashModelo(response.getStashes());
-                        pantalla.setResultadoModelo(response);
-                        navegador.set(index, pantalla);
-                        app.getTabbedPaneCustom1().setComponentAt(index, pantalla);
-                        String repo = response.getRepositorioActual();
-                        if (app.getTabbedPaneCustom1().getTabCount() == 0) {
-                            CardLayout cardLayout = (CardLayout) app.getVariedadLayoutPanel().getLayout();
-                            cardLayout.show(app.getVariedadLayoutPanel(), CardConstante.CARD_MENU_SELECTION);
-                            JOptionPane.showMessageDialog(app,
-                                    "No existen pestañas para actualizar el repositorio correspondiente" + repo);
-                        } else {
-                            CardLayout cardLayout = (CardLayout) app.getVariedadLayoutPanel().getLayout();
-                            cardLayout.show(app.getVariedadLayoutPanel(), CardConstante.CARD_TABBED_PANE_CUSTOM);
-                            app.getTabbedPaneCustom1().setSelectedComponent(pantalla);
-                        }
-                    }
-                });
-            });
-        }
-
-        @Override
-        public int GetTabCount() {
-            return navegador.size();
-        }
-    }
-
-    private static final class AddTab implements IConsumerTabs {
-
-        private List<PanelContenedorMenu> navegador;
-        private FormApp app;
-
-        public AddTab(List<PanelContenedorMenu> navegador, FormApp app) {
-            this.navegador = navegador;
-            this.app = app;
-        }
-
-        @Override
-        public void ConsumerTab(final int index, final PanelContenedorMenu pantalla,
-                CompletableFuture<ModeloRepositorio> asyncMethod) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'ConsumerTab'");
-        }
-
-        @Override
-        public int GetTabCount() {
-            return navegador.size();
-        }
-
     }
 
 }

@@ -29,4 +29,9 @@ public abstract class ActualizadorMenu {
     protected void setRepositorio(String repositorio) {
         this.repositorio = repositorio;
     }
+
+    public IDaoGitUsuario getDaoRepositorio() {
+        return daoRepositorio;
+    }
+    
 }
