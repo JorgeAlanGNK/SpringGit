@@ -1,7 +1,6 @@
 package com.jorge_alan.spring_git_mvc.datos.capaDatos;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,8 +30,7 @@ public class GitVisualizacion implements IGitVisualizacion {
         this.bufferComando = new ComandoUpdate();
     }
 
-    private String ProcComando(Path dir, TipoComando areaComando, WildCard tipoCard)
-            throws IOException, InterruptedException {
+    private String ProcComando(Path dir, TipoComando areaComando, WildCard tipoCard) {
         Objects.requireNonNull(dir, "directorio no encontrado");
         Objects.requireNonNull(areaComando, "No se especifico los comandos de ejecución");
         if (!Files.exists(dir)) {
@@ -60,42 +58,43 @@ public class GitVisualizacion implements IGitVisualizacion {
             comandoPrincipal.add(tipoCard.getWildCard());
         }
         System.out.println(comandoPrincipal.toString());
-        ProcessBuilder pb = new ProcessBuilder()
-                .command(comandoPrincipal)
-                .redirectErrorStream(true)
-                .directory(dir.toFile());
-        Process start = pb.start();
-        int result = start.waitFor();
-        if (result != 0) {
-            throw new IllegalArgumentException("Error en la ejecución del cmd");
-        }
-        StringBuilder stb = new StringBuilder();
-        try (BufferedReader temp = new BufferedReader(
-                new InputStreamReader(start.getInputStream(), StandardCharsets.UTF_8))) {
-            String info = null;
-            while ((info = temp.readLine()) != null) {
-                stb.append(info.trim()).append(System.lineSeparator());
+        try {
+            ProcessBuilder pb = new ProcessBuilder()
+                    .command(comandoPrincipal)
+                    .redirectErrorStream(true)
+                    .directory(dir.toFile());
+            Process start = pb.start();
+            int result = start.waitFor();
+            if (result != 0) {
+                throw new IllegalArgumentException("Error en la ejecución del cmd");
             }
+            StringBuilder stb = new StringBuilder();
+            try (BufferedReader temp = new BufferedReader(
+                    new InputStreamReader(start.getInputStream(), StandardCharsets.UTF_8))) {
+                String info = null;
+                while ((info = temp.readLine()) != null) {
+                    stb.append(info.trim()).append(System.lineSeparator());
+                }
+            }
+            return stb.toString().trim();
+        } catch (Exception e) {
+            System.out.println("Error interno en " + this.getClass().getName());
+            e.printStackTrace();
         }
-        return stb.toString().trim();
+        return null;
     }
 
     @Override
     public CompletableFuture<Set<RamaModelo>> ObtenerRamas(String repositorio) {
         CompletableFuture<Set<RamaModelo>> taskInit = CompletableFuture.supplyAsync(() -> {
             Set<RamaModelo> ramaModelo = Sets.newHashSet();
-            try {
-                Path carpeta = Paths.get(repositorio);
-                if (!Files.isDirectory(carpeta)) {
-                    throw new IllegalArgumentException(
-                            "No se puede leer este repositorio o no existe, favor de validar");
-                }
-                String lineaStream = ProcComando(carpeta, TipoComando.BRANCH, null);
-                ramaModelo.addAll(this.bufferComando.LecturaRama(lineaStream));
-            } catch (Exception e) {
-                System.out.println("Error");
-                e.printStackTrace();
+            Path carpeta = Paths.get(repositorio);
+            if (!Files.isDirectory(carpeta)) {
+                throw new IllegalArgumentException(
+                        "No se puede leer este repositorio o no existe, favor de validar");
             }
+            String lineaStream = ProcComando(carpeta, TipoComando.BRANCH, null);
+            ramaModelo.addAll(bufferComando.LecturaRama(lineaStream));
             return ramaModelo;
         });
         return taskInit;
@@ -105,17 +104,13 @@ public class GitVisualizacion implements IGitVisualizacion {
     public CompletableFuture<List<StashModelo>> ObtenerStashes(String repositorio) {
         CompletableFuture<List<StashModelo>> futureStash = CompletableFuture.supplyAsync(() -> {
             List<StashModelo> resultadoStash = Lists.newArrayList();
-            try {
-                Path directorio = Paths.get(repositorio);
-                if (!Files.isDirectory(directorio)) {
-                    throw new IllegalArgumentException(
-                            "No se puede leer este repositorio o no existe, favor de validar");
-                }
-                String lineaRama = ProcComando(directorio, TipoComando.STASH_LIST, null);
-            } catch (Exception e) {
-                System.out.println("Error");
-                e.printStackTrace();
+            Path directorio = Paths.get(repositorio);
+            if (!Files.isDirectory(directorio)) {
+                throw new IllegalArgumentException(
+                        "No se puede leer este repositorio o no existe, favor de validar");
             }
+            String lineaRama = ProcComando(directorio, TipoComando.STASH_LIST, null);
+            resultadoStash.addAll(bufferComando.StashLectura(lineaRama));
             return resultadoStash;
         });
         return futureStash;
