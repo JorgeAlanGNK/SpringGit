@@ -1,12 +1,9 @@
 package com.jorge_alan.spring_git_mvc.datos.sql_extension.operators;
 
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -15,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.ExtensionQuery;
 import com.jorge_alan.spring_git_mvc.datos.sql_extension.ParamValue;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
@@ -22,57 +20,11 @@ import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 public class ConsultaRepos implements UsuarioGitDB {
 
     private ConfigurationFactory factory;
+    private ExtensionQuery querys;
 
     public ConsultaRepos(ConfigurationFactory factory) {
         this.factory = factory;
-    }
-
-    private Connection Database() throws SQLException, Exception, IOException {
-        String database = factory.GetKeyValue("sqlite.database");
-        String router = factory.GetKeyValue("sqlite.router");
-        Connection conn = DriverManager.getConnection(router + database);
-        return conn;
-    }
-
-    // los metodos para las querys, hay que separar
-    private boolean UpdateQuery(Connection database, String queryGeneral, Supplier<List<ParamValue>> referencias)
-            throws SQLException, InterruptedException {
-        List<ParamValue> params = referencias.get();
-        try (PreparedStatement ps = database.prepareStatement(queryGeneral)) {
-            if (params != null && queryGeneral.contains("?")) {
-                for (int i = 1; i <= params.size(); i++) {
-                    ps.setObject(i, params.get(i - 1).getValor());
-                }
-            }
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    // referencias: siempre guardarlo en una variable.
-    private <T> List<T> QueryModel(Connection database, String queryGeneral, List<ParamValue> paramNames,
-            Supplier<List<ParamValue>> referencias, Supplier<T> Initializer, BiConsumer<T, ParamValue> Props)
-            throws SQLException, InterruptedException {
-        List<ParamValue> params = referencias.get();
-        List<T> valorActual = Lists.newArrayList();
-        try (PreparedStatement ps = database.prepareStatement(queryGeneral)) {
-            if (paramNames != null && queryGeneral.contains("?")) {
-                for (int i = 1; i <= paramNames.size(); i++) {
-                    ps.setObject(i, paramNames.get(i - 1).getValor(), paramNames.get(i).getTipo());
-                }
-            }
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    T modelo = Initializer.get();
-                    for (ParamValue paramName : params) {
-                        Object valorParam = rs.getObject(paramName.getParametro());
-                        paramName.setValor(valorParam);
-                        Props.accept(modelo, paramName);
-                    }
-                    valorActual.add(modelo);
-                }
-            }
-        }
-        return valorActual;
+        this.querys = new ExtensionQuery(factory);
     }
 
     @Override
@@ -99,8 +51,8 @@ public class ConsultaRepos implements UsuarioGitDB {
                     model.setNombre_repo((String) prop.getValor());
             }
         };
-        try (Connection database = Database()) {
-            List<GitToken> resultado = QueryModel(database, query, null, funcReferencias, initializer, setProps);
+        try (Connection database = querys.Database()) {
+            List<GitToken> resultado = querys.QueryModel(database, query, null, funcReferencias, initializer, setProps);
             return resultado;
         } catch (Exception ex) {
             System.getLogger(ConsultaRepos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -111,7 +63,7 @@ public class ConsultaRepos implements UsuarioGitDB {
     @Override
     public GitToken ObtenerTokenDatos(String token) {
         GitToken temp = new GitToken();
-        try (Connection conn = Database();
+        try (Connection conn = querys.Database();
                 PreparedStatement consultaToken = conn.prepareStatement("");
                 ResultSet tokenSet = consultaToken.executeQuery()) {
 
@@ -131,8 +83,8 @@ public class ConsultaRepos implements UsuarioGitDB {
                     new ParamValue("git_nombre_url", repositorio.getGit_nombre_url(), JDBCType.VARCHAR),
                     new ParamValue("es_activo", repositorio.getEs_activo(), JDBCType.INTEGER),
                     new ParamValue("id_token", repositorio.getId_token(), JDBCType.INTEGER));
-            try (Connection conn = Database()) {
-                boolean executable = UpdateQuery(conn, query, valores);
+            try (Connection conn = querys.Database()) {
+                boolean executable = querys.UpdateQuery(conn, query, valores);
                 return executable;
             } catch (Exception ex) {
                 System.out.println("Error" + query);
