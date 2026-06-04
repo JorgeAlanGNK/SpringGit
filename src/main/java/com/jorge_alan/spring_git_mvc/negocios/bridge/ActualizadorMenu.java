@@ -1,7 +1,7 @@
 package com.jorge_alan.spring_git_mvc.negocios.bridge;
 
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.IDaoGitUsuario;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.daos.IDaoGitUsuario;
 
 public abstract class ActualizadorMenu {
 

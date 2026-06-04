@@ -1,24 +1,27 @@
 package com.jorge_alan.spring_git_mvc.negocios;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.DaoGitUsuario;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.IDaoGitUsuario;
-import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
-import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RemotoModelo;
-import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
-import com.jorge_alan.spring_git_mvc.negocios.bridge.ActualizadorMenu;
-import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.daos.DaoGitUsuario;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.daos.IDaoGitUsuario;
+import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
+import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RemotoModelo;
+import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.StashModelo;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
+import com.jorge_alan.spring_git_mvc.negocios.bridge.ActualizadorMenu;
 
 public class IniciadorUsuario extends ActualizadorMenu {
 
@@ -49,13 +52,14 @@ public class IniciadorUsuario extends ActualizadorMenu {
         };
         Supplier<CompletableFuture<ModeloRepositorio>> ejecutarSinRemoto = () -> {
             CompletableFuture<Set<RamaModelo>> tareaRamaLocal = super.getComandos()
-                    .ObtenerRamas(super.getRepositorio());
+                    .ObtenerRamas(super.getRepositorio()).exceptionally((error) -> Sets.newHashSet());
             CompletableFuture<Set<RamaModelo>> tareaRamaRemoto = super.getComandos()
-                    .ObtenerRemotos(super.getRepositorio());
+                    .ObtenerRemotos(super.getRepositorio()).exceptionally((error) -> Sets.newHashSet());
             CompletableFuture<List<StashModelo>> tareaStash = super.getComandos()
-                    .ObtenerStashes(super.getRepositorio());
-            CompletableFuture<Set<RemotoModelo>> taskRemotoUrl = super.getComandos().ObtenerUrl(super.getRepositorio());
-            return CompletableFuture.allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash, taskRemotoUrl).thenApply(v -> {
+                    .ObtenerStashes(super.getRepositorio()).exceptionally((error) -> Lists.newArrayList());
+            CompletableFuture<Set<RemotoModelo>> taskRemotoUrl = super.getComandos().ObtenerUrl(super.getRepositorio())
+                    .exceptionally((error) -> Sets.newHashSet());
+            Function<Void, ModeloRepositorio> resultadoTaskAll = (v) -> {
                 EstadoSituacion objDto = new EstadoSituacion();
                 ModeloRepositorio resultado = new ModeloRepositorio(objDto);
                 resultado.setRepositorios(Sets.newHashSet());
@@ -71,17 +75,20 @@ public class IniciadorUsuario extends ActualizadorMenu {
                 objDto.setTipoEnum(EstadoEnum.OK);
                 objDto.setMensaje("");
                 return resultado;
-            });
+            };
+            return CompletableFuture.allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash, taskRemotoUrl)
+                    .thenApply(resultadoTaskAll);
         };
         Supplier<CompletableFuture<ModeloRepositorio>> ejecutarConRemoto = () -> {
             CompletableFuture<Set<RamaModelo>> tareaRamaLocal = super.getComandos()
-                    .ObtenerRamas(super.getRepositorio());
+                    .ObtenerRamas(super.getRepositorio()).exceptionally((error) -> Sets.newHashSet());
             CompletableFuture<Set<RamaModelo>> tareaRamaRemoto = super.getComandos()
-                    .ObtenerRemotos(super.getRepositorio());
+                    .ObtenerRemotos(super.getRepositorio()).exceptionally((error) -> Sets.newHashSet());
             CompletableFuture<List<StashModelo>> tareaStash = super.getComandos()
-                    .ObtenerStashes(super.getRepositorio());
-            CompletableFuture<Set<RemotoModelo>> taskRemotoUrl = super.getComandos().ObtenerUrl(super.getRepositorio());
-            return CompletableFuture.allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash, taskRemotoUrl).thenApply(v -> {
+                    .ObtenerStashes(super.getRepositorio()).exceptionally((error) -> Lists.newArrayList());
+            CompletableFuture<Set<RemotoModelo>> taskRemotoUrl = super.getComandos().ObtenerUrl(super.getRepositorio())
+                    .exceptionally((error) -> Sets.newHashSet());
+            Function<Void, ModeloRepositorio> taskResultAll = (v) -> {
                 EstadoSituacion objDto = new EstadoSituacion();
                 ModeloRepositorio resultado = new ModeloRepositorio(objDto);
                 resultado.setRepositorios(Sets.newHashSet());
@@ -97,7 +104,9 @@ public class IniciadorUsuario extends ActualizadorMenu {
                 objDto.setTipoEnum(EstadoEnum.OK);
                 objDto.setMensaje("");
                 return resultado;
-            });
+            };
+            return CompletableFuture.allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash, taskRemotoUrl)
+                    .thenApply(taskResultAll);
         };
         Supplier<CompletableFuture<ModeloRepositorio>> sinRepo = () -> {
             return CompletableFuture.supplyAsync(() -> {

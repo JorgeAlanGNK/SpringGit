@@ -1,4 +1,4 @@
-package com.jorge_alan.spring_git_mvc.datos.sql_extension;
+package com.jorge_alan.spring_git_mvc.datos.sql_extension.daos;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -6,6 +6,8 @@ import java.util.concurrent.CompletableFuture;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory.DefaultConfiguration;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.operators.ConsultaRepos;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.operators.UsuarioGitDB;
 
 public class DaoGitUsuario implements IDaoGitUsuario {
     

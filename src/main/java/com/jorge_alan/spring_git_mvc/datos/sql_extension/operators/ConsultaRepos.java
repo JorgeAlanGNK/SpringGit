@@ -1,10 +1,6 @@
-package com.jorge_alan.spring_git_mvc.datos.sql_extension;
+package com.jorge_alan.spring_git_mvc.datos.sql_extension.operators;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.JDBCType;
@@ -19,6 +15,7 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.ParamValue;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 

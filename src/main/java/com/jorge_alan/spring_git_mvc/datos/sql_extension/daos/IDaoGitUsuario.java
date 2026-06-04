@@ -1,4 +1,4 @@
-package com.jorge_alan.spring_git_mvc.datos.sql_extension;
+package com.jorge_alan.spring_git_mvc.datos.sql_extension.daos;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.GitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.DaoGitUsuario;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.daos.DaoGitUsuario;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import javax.swing.JLayeredPane;
 
