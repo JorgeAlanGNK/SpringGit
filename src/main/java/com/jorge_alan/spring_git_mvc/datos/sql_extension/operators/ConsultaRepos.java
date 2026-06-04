@@ -75,8 +75,8 @@ public class ConsultaRepos implements UsuarioGitDB {
     @Override
     public CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio) {
         String query = "INSERT INTO GitRepositorios" +
-                "(git_nombre_local, git_nombre_url, es_activo, id_token)" +
-                "VALUES(?, ?, ?, ?);";
+                "(git_nombre_local, git_nombre_url, es_activo, id_token, sesion_activa)" +
+                "VALUES(?, ?, ?, ?, 1);";
         Supplier<CompletableFuture<Boolean>> execute = () -> CompletableFuture.supplyAsync(() -> {
             Supplier<List<ParamValue>> valores = () -> Lists.newArrayList(
                     new ParamValue("git_nombre_local", repositorio.getGit_nombre_local(), JDBCType.VARCHAR),

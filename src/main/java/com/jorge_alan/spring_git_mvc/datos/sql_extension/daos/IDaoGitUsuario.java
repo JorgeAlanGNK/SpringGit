@@ -10,4 +10,6 @@ public interface IDaoGitUsuario {
     List<GitToken> TokenActivos();
 
     CompletableFuture<Boolean> IngresarRepoLocal(String gitNombreLocal, String gitNombreRemoto , Integer esActivo, Integer idToken);
+
+    CompletableFuture<Integer> CantidadRepositorios();
 }
