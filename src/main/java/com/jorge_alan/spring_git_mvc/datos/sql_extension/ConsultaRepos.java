@@ -60,7 +60,7 @@ public class ConsultaRepos implements UsuarioGitDB {
         try (PreparedStatement ps = database.prepareStatement(queryGeneral)) {
             if (paramNames != null && queryGeneral.contains("?")) {
                 for (int i = 1; i <= paramNames.size(); i++) {
-                    ps.setObject(i, paramNames.get(i).getValor(), paramNames.get(i).getTipo());
+                    ps.setObject(i, paramNames.get(i - 1).getValor(), paramNames.get(i).getTipo());
                 }
             }
             try (ResultSet rs = ps.executeQuery()) {
