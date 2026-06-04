@@ -1,7 +1,6 @@
 package com.jorge_alan.spring_git_mvc.componentes.navegacion;
 
 import java.awt.CardLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -35,7 +34,7 @@ public class ConstruccionNavegador {
     private int cantidadPaneles;
     private Set<String> rutas;
     private ControladorFormulario controlador;// no se puede instanciar, intentar cargar el controlador desde el formApp
-    //verificar si esta mostrando un PanelContenedorMenu
+    // verificar si esta mostrando un PanelContenedorMenu
     private boolean muestraRepos;
 
     public ConstruccionNavegador(FormApp app) {
@@ -88,17 +87,14 @@ public class ConstruccionNavegador {
         return ruta;
     }
 
-    public void CambiarPanel(CardLayout cardLayout, JComponent componente) {
-        Container parentContainer = componente.getParent();
-        cardLayout.show(parentContainer, "card1");
-    }
-
     public void AgregarPanelTab(String nuevoEnlace) {
         // falta quitar la ruta que se puede obtener esta informacion del modelo.
         int separatorFinal = nuevoEnlace.lastIndexOf("\\");
         if (separatorFinal != -1) {
             String tempEnlace = nuevoEnlace.substring(separatorFinal).replace("\\", "");
-            ModeloRepositorio modelo = GenerarRepo(nuevoEnlace);
+            ModeloRepositorio modelo = new ModeloRepositorio();
+            modelo.setRepositorioActual(nuevoEnlace);
+            modelo.setRepositorioActual(nuevoEnlace);
             // se comienza a cargar el panel del menu principal
             this.modelosRepositorios.put(tempEnlace, modelo);
             this.controlador.setModelo(modelo);
@@ -108,7 +104,7 @@ public class ConstruccionNavegador {
                 // el valor
                 SwingUtilities.invokeLater(() -> {
                     if (response.getSituacion().getTipoEnum() == EstadoEnum.OK) {
-                        //cambiar y cargar el repositorio actual
+                        // cambiar y cargar el repositorio actual
                         nuevoPanel.getRamaLocalArea().setRamaLocal(response.getRamasLocales());
                         nuevoPanel.getRamaRemotoOrigin().setRamaRemotos(response.getRamasRemotas());
                         nuevoPanel.getStashAreaPanel().setStashModelo(response.getStashes());
@@ -116,12 +112,16 @@ public class ConstruccionNavegador {
                         this.panelNavegador.add(nuevoPanel);
                         this.cantidadPaneles = panelNavegador.size();
                         this.app.getTabbedPaneCustom1().addTab(tempEnlace, nuevoPanel);
+                        // se cambia el panel
                         CardLayout cardLayout = (CardLayout) app.getVariedadLayoutPanel().getLayout();
                         cardLayout.show(app.getVariedadLayoutPanel(), CardConstante.CARD_TABBED_PANE_CUSTOM);
                         muestraRepos = app.getTabbedPaneCustom1().getTabCount() > 0;
+                        // ingresamos a la base de datos
+                        ObtenerPanelSeleccionado(!response.getRamasRemotas().isEmpty());
                         app.repaint();
                         app.revalidate();
                     } else {
+                        muestraRepos = false;
                         JOptionPane.showMessageDialog(app, String.format(
                                 "El repositorio en la ruta %s no es valida, favor de generar uno o ingresar uno existente",
                                 nuevoEnlace),
@@ -135,13 +135,6 @@ public class ConstruccionNavegador {
 
     public Set<String> getRutas() {
         return rutas;
-    }
-
-    private ModeloRepositorio GenerarRepo(String ruta) {
-        ModeloRepositorio modelo = new ModeloRepositorio();
-        modelo.setRepositorios(rutas);
-        modelo.setRepositorioActual(ruta);
-        return modelo;
     }
 
     public void CerrarTab(String buscarRepo) {// Cierra el tab, pero no elimina el Tab
@@ -172,13 +165,28 @@ public class ConstruccionNavegador {
         }
     }
 
-    public void ObtenerPanelSeleccionado() {
-        //aqui nos encargamos de ingresar el repositorio a SQlite
+    public void ObtenerPanelSeleccionado(boolean activarRemoto) {
+        // se puede verificar si el repositorio tiene una lista de repositorios
+        // constantemente se va a estar verficando la URL en caso de error
         if (muestraRepos) {
-            PanelContenedorMenu menu_actual = app.getTabbedPaneCustom1().getSelectedTab();
+            int index = app.getTabbedPaneCustom1().getSelectedIndex();
+            PanelContenedorMenu menu_actual = (PanelContenedorMenu) app.getTabbedPaneCustom1().getComponentAt(index);
             ModeloRepositorio repo = menu_actual.getResultadoModelo();
+            Consumer<Boolean> execute = (resultado) -> {
+                if (resultado) {
+                    repo.setActivo(true);
+                } else {
+                    repo.setActivo(false);
+                }
+            };
             if (repo.getSituacion().getTipoEnum() == EstadoEnum.OK) {
+                menu_actual.getControlador().IngresarRepositorio(repo.getRepositorioActual(), activarRemoto)
+                        .thenAccept(execute);
             }
+        } else {
+            JOptionPane.showMessageDialog(app,
+                    "No hay repositorios para ingresar, favor de seleccionar uno o generar uno nuevo",
+                    "No hay repositorios", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

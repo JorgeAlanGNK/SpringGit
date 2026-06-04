@@ -17,6 +17,8 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class TabbedPaneCustom extends JTabbedPane {
 
+    //getTabCount no se basa en index
+
     private ImagenEstatica imagenComponente = new ImagenEstatica();
     private DesignTab basicoDesign = new DesignTab();
     private ConstruccionNavegador navegador;
@@ -46,6 +48,7 @@ public class TabbedPaneCustom extends JTabbedPane {
     }
     
     public PanelContenedorMenu getSelectedTab() {
+        //regresa la celda personalizada
         int index = getSelectedIndex();
         if(index > getTabCount() - 1) {
             JOptionPane.showMessageDialog(this, "No se puede iniciar el modelo correspondiente");

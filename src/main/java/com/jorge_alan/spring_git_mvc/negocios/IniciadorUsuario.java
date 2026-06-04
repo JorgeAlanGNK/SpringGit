@@ -151,7 +151,7 @@ public class IniciadorUsuario extends ActualizadorMenu {
                 return CompletableFuture.completedFuture(false);
             }
             List<RemotoModelo> lista = listaRemoto.stream().collect(Collectors.toList());
-            return operacion.IngresarRepoLocal(dir, lista.getFirst().getFetch(), 1, Integer.getInteger(token));
+            return operacion.IngresarRepoLocal(dir, lista.get(0).getFetch(), 1, Integer.getInteger(token));
         };
         if (hayRemoto) {
             return verificarRemoto.get().thenCompose(execute).exceptionally(callErrorFunc);

@@ -18,22 +18,23 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
+import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 
 public class ConsultaRepos implements UsuarioGitDB {
 
-    public ConsultaRepos() {
+    private ConfigurationFactory factory;
+
+    public ConsultaRepos(ConfigurationFactory factory) {
+        this.factory = factory;
     }
 
     private Connection Database() throws SQLException, Exception, IOException {
-        try (InputStream input = getClass().getResourceAsStream("database\\gitUserDB.db")) {
-            if (input == null)
-                throw new SQLException("No exsite una base de datos temporal para este archivo");
-            Path tempFile = Files.createTempFile("gitUserDB", ".db");
-            Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
-            return DriverManager.getConnection("jdbc:sqlite:" + tempFile.toAbsolutePath());
-        }
+        String database = factory.GetKeyValue("sqlite.database");
+        String router = factory.GetKeyValue("sqlite.router");
+        Connection conn = DriverManager.getConnection(router + database);
+        return conn;
     }
 
     // los metodos para las querys, hay que separar
@@ -43,10 +44,10 @@ public class ConsultaRepos implements UsuarioGitDB {
         try (PreparedStatement ps = database.prepareStatement(queryGeneral)) {
             if (params != null && queryGeneral.contains("?")) {
                 for (int i = 1; i <= params.size(); i++) {
-                    ps.setObject(i, params.get(i).getValor(), params.get(i).getTipo());
+                    ps.setObject(i, params.get(i - 1).getValor());
                 }
             }
-            return ps.execute();
+            return ps.executeUpdate() > 0;
         }
     }
 
@@ -124,8 +125,8 @@ public class ConsultaRepos implements UsuarioGitDB {
 
     @Override
     public CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio) {
-        String query = "INSERT INTO GitRepositorios\n" + //
-                "(git_nombre_local, git_nombre_url, es_activo, id_token)\n" + //
+        String query = "INSERT INTO GitRepositorios" +
+                "(git_nombre_local, git_nombre_url, es_activo, id_token)" +
                 "VALUES(?, ?, ?, ?);";
         Supplier<CompletableFuture<Boolean>> execute = () -> CompletableFuture.supplyAsync(() -> {
             Supplier<List<ParamValue>> valores = () -> Lists.newArrayList(

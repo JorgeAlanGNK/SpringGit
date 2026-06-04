@@ -15,6 +15,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
+        <sqlite.database>gitUserDB.db</sqlite.database>
+        <sqlite.router>jdbc:sqlite:C:\ProyectosTemp\springMVCGit\spring_git_mvc\src\main\resources\database\</sqlite.router>
     </properties>
 
     <dependencyManagement>
@@ -79,6 +81,15 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>database/**/*.db</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

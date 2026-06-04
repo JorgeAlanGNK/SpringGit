@@ -5,13 +5,16 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
+import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory.DefaultConfiguration;
 
 public class DaoGitUsuario implements IDaoGitUsuario {
     
     private UsuarioGitDB info;
+    private DefaultConfiguration config;
 
     public DaoGitUsuario() {
-        info = new ConsultaRepos();
+        config = DefaultConfiguration.GetInstance();
+        info = new ConsultaRepos(config);
     }
     
     @Override
