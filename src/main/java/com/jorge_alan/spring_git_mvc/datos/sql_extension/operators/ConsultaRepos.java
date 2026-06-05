@@ -19,11 +19,9 @@ import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 
 public class ConsultaRepos implements UsuarioGitDB {
 
-    private ConfigurationFactory factory;
     private ExtensionQuery querys;
 
     public ConsultaRepos(ConfigurationFactory factory) {
-        this.factory = factory;
         this.querys = new ExtensionQuery(factory);
     }
 
@@ -55,7 +53,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             List<GitToken> resultado = querys.QueryModel(database, query, null, funcReferencias, initializer, setProps);
             return resultado;
         } catch (Exception ex) {
-            System.getLogger(ConsultaRepos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            querys.FormatError(ex, query);
         }
         return Lists.newArrayList();
     }
@@ -87,14 +85,64 @@ public class ConsultaRepos implements UsuarioGitDB {
                 boolean executable = querys.UpdateQuery(conn, query, valores);
                 return executable;
             } catch (Exception ex) {
-                System.out.println("Error" + query);
-                System.out.println(ex.getMessage());
-                System.out.println(ex.getLocalizedMessage());
-                ex.printStackTrace();
+                querys.FormatError(ex, query);
             }
             return false;
         });
         return execute.get();
+    }
+
+    @Override
+    public CompletableFuture<Integer> ListarReposActivos() {
+        Supplier<Integer> taskAsync = () -> {
+            String consultas = "SELECT COUNT(id_repositorio) AS cantidad_repositorio FROM GitRepositorios WHERE sesion_activa = 1";
+            try (Connection conn = querys.Database()) {
+                Supplier<Integer> modeloRepo = () -> Integer.valueOf(0);
+                // aqui se necesita cargar los parametros de las columnas de la consulta
+                // por ejemplo el select con el nombre de sus referencias
+                List<ParamValue> consultaColumna = Lists.newArrayList(
+                        new ParamValue("cantidad_repositorio"));
+                BiConsumer<Integer, ParamValue> setPropsFunc = (model, value) -> {
+                    switch (value.getParametro()) {
+                        case "cantidad_repositorio" -> model = (Integer) value.getValor();
+                    }
+                };
+                int result = querys.QueryModel(conn, consultas, consultaColumna, null, modeloRepo, setPropsFunc).get(0);
+                return result;
+            } catch (Exception e) {
+                querys.FormatError(e, consultas);
+                return 0;
+            }
+        };
+        return CompletableFuture.supplyAsync(taskAsync);
+    }
+
+    @Override
+    public CompletableFuture<List<GitRepositorio>> ActivarRepositorios() {
+        Supplier<List<GitRepositorio>> taskAsync = () -> {
+            List<GitRepositorio> resultQuery = null;
+            String consultas = "SELECT id_repositorio, git_nombre_local, git_nombre_url FROM GitRepositorios WHERE sesion_activa = 1";
+            try (Connection conn = querys.Database()) {
+                Supplier<GitRepositorio> modeloRepo = GitRepositorio::new;
+                // aqui se necesita cargar los parametros de las columnas de la consulta
+                // por ejemplo el select con el nombre de sus referencias
+                List<ParamValue> consultaColumna = Lists.newArrayList(
+                        new ParamValue("cantidad_repositorio"));
+                BiConsumer<GitRepositorio, ParamValue> setPropsFunc = (model, value) -> {
+                    switch (value.getParametro()) {
+                        case "id_repositorio" -> model.setId_repositorio((Integer)value.getValor());
+                        case "git_nombre_local" -> model.setGit_nombre_local(String.valueOf(value.getValor()));
+                        case "git_nombre_url" -> model.setGit_nombre_url(String.valueOf(value.getValor()));
+                    }
+                };
+                resultQuery = querys.QueryModel(conn, consultas, consultaColumna, null, modeloRepo, setPropsFunc);
+                return resultQuery;
+            } catch (Exception e) {
+                querys.FormatError(e, consultas);
+                return Lists.newArrayList();
+            }
+        };
+        return CompletableFuture.supplyAsync(taskAsync);
     }
 
 }

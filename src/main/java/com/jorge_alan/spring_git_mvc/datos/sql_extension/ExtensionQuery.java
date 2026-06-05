@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
@@ -41,29 +42,71 @@ public class ExtensionQuery {
         }
     }
 
-    public <T> List<T> QueryModel(Connection db, String queryGeneral, List<ParamValue> paramNames,
-            Supplier<List<ParamValue>> referencias, Supplier<T> getInstance, BiConsumer<T, ParamValue> propsReferences)
+    public <T> List<T> QueryModel(Connection db, String query, List<ParamValue> columnsName,
+            Supplier<List<ParamValue>> references, Supplier<T> getInstance, BiConsumer<T, ParamValue> setProps)
             throws SQLException, InterruptedException {
-        List<ParamValue> params = referencias.get();
-        List<T> valorActual = Lists.newArrayList();
-        try (PreparedStatement ps = db.prepareStatement(queryGeneral)) {
-            if (paramNames != null && queryGeneral.contains("?")) {
-                for (int i = 1; i <= paramNames.size(); i++) {
-                    ps.setObject(i, paramNames.get(i - 1).getValor());
+        List<T> resultList = Lists.newArrayList();
+        try (PreparedStatement ps = db.prepareStatement(query)) {
+            if (query.contains("?")) {
+                List<ParamValue> getReferences = references.get();
+                // se encarga de enviar y acaparar los valores hacia la consulta
+                for (int i = 1; i <= getReferences.size(); i++) {
+                    ps.setObject(i, getReferences.get(i - 1));
                 }
             }
             try (ResultSet rs = ps.executeQuery()) {
+                // se ejecuta la consulta y hay que obtener los valores
                 while (rs.next()) {
-                    T modelo = getInstance.get();
-                    for (ParamValue paramName : params) {
-                        Object valorParam = rs.getObject(paramName.getParametro());
-                        paramName.setValor(valorParam);
-                        propsReferences.accept(modelo, paramName);//este es el set del objeto
+                    // se lee por fila, hay que tomar los valores de la columna de cada fila
+                    T instanceModel = getInstance.get();
+                    for (ParamValue nameColumn : columnsName) {
+                        Object resultColumn = rs.getObject(nameColumn.getParametro());
+                        nameColumn.setValor(resultColumn);
+                        setProps.accept(instanceModel, nameColumn);
                     }
-                    valorActual.add(modelo);
+                    // se envia el modelo completo con los valores de cada fila
+                    resultList.add(instanceModel);
                 }
             }
+            return resultList;
         }
-        return valorActual;
+    }
+
+    public <T> List<T> QueryModel(Connection db, String query, List<ParamValue> columnsName,
+            Supplier<List<ParamValue>> references, Supplier<T> getInstance, BiFunction<T, ParamValue, T> setProps)
+            throws SQLException, InterruptedException {
+        List<T> resultList = Lists.newArrayList();
+        try (PreparedStatement ps = db.prepareStatement(query)) {
+            if (query.contains("?")) {
+                List<ParamValue> getReferences = references.get();
+                // se encarga de enviar y acaparar los valores hacia la consulta
+                for (int i = 1; i <= getReferences.size(); i++) {
+                    ps.setObject(i, getReferences.get(i - 1));
+                }
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                // se ejecuta la consulta y hay que obtener los valores
+                while (rs.next()) {
+                    // se lee por fila, hay que tomar los valores de la columna de cada fila
+                    T instanceModel = getInstance.get();
+                    for (ParamValue nameColumn : columnsName) {
+                        Object resultColumn = rs.getObject(nameColumn.getParametro());
+                        nameColumn.setValor(resultColumn);
+                        instanceModel = setProps.apply(instanceModel, nameColumn);
+                    }
+                    // se envia el modelo completo con los valores de cada fila
+                    resultList.add(instanceModel);
+                }
+            }
+            return resultList;
+        }
+    }
+
+    public void FormatError(Throwable ex, String query) {
+        System.out.println("Error query:" + query);
+        System.out.println(ex.getMessage());
+        System.out.println(ex.getLocalizedMessage());
+        System.out.println("NameClassError: " + ex.getClass().getName());
+        ex.printStackTrace();
     }
 }

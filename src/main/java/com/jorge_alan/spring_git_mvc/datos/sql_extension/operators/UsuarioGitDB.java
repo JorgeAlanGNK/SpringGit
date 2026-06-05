@@ -8,9 +8,13 @@ import java.util.concurrent.CompletableFuture;
 
 public interface UsuarioGitDB {
 
-    public List<GitToken> ObtenerTokensActivos();
+    List<GitToken> ObtenerTokensActivos();
 
-    public CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio);
+    CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio);
 
-    public GitToken ObtenerTokenDatos(String token);
+    GitToken ObtenerTokenDatos(String token);
+
+    CompletableFuture<Integer> ListarReposActivos();
+
+    CompletableFuture<List<GitRepositorio>> ActivarRepositorios();
 }
