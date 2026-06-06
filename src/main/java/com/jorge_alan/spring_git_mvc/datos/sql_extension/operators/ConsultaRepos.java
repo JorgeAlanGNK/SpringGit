@@ -53,11 +53,11 @@ public class ConsultaRepos implements UsuarioGitDB {
                 "VALUES(?, ?, ?, ?, 1);";
         return CompletableFuture.supplyAsync(() -> {
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(0, repositorio.getGit_nombre_local());
-                ps.setString(1, repositorio.getGit_nombre_url());
-                ps.setInt(2, repositorio.getEs_activo());
-                ps.setInt(3, repositorio.getId_token());
+                    PreparedStatement ps = connectionBuilder.SendProperties(conn, query,
+                            repositorio.getGit_nombre_local(),
+                            repositorio.getGit_nombre_url(),
+                            repositorio.getEs_activo(),
+                            repositorio.getId_token())) {
                 boolean hayDatos = ps.executeUpdate() > 0;
                 return hayDatos;
             } catch (Exception e) {
