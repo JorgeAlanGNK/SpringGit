@@ -16,4 +16,8 @@ public enum EstadoEnum {
         this.numeroEstado = numeroEstado;
     }
 
+    public int getNumeroEstado() {
+        return numeroEstado;
+    }
+
 }

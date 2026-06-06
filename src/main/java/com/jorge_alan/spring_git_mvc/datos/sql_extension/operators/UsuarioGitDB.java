@@ -17,4 +17,6 @@ public interface UsuarioGitDB {
     CompletableFuture<Integer> ListarReposActivos();
 
     CompletableFuture<List<GitRepositorio>> ActivarRepositorios();
+
+    CompletableFuture<GitRepositorio> ObtenerRuta(String rutaLocal);
 }

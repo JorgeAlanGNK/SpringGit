@@ -19,10 +19,10 @@ import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 
 public class ConsultaRepos implements UsuarioGitDB {
 
-    private ExtensionQuery querys;
+    private ExtensionQuery connectionBuilder;
 
     public ConsultaRepos(ConfigurationFactory factory) {
-        this.querys = new ExtensionQuery(factory);
+        this.connectionBuilder = new ExtensionQuery(factory);
     }
 
     @Override
@@ -49,11 +49,11 @@ public class ConsultaRepos implements UsuarioGitDB {
                     model.setNombre_repo((String) prop.getValor());
             }
         };
-        try (Connection database = querys.Database()) {
-            List<GitToken> resultado = querys.QueryModel(database, query, null, funcReferencias, initializer, setProps);
+        try (Connection database = connectionBuilder.Database()) {
+            List<GitToken> resultado = connectionBuilder.QueryModel(database, query, null, funcReferencias, initializer, setProps);
             return resultado;
         } catch (Exception ex) {
-            querys.FormatError(ex, query);
+            connectionBuilder.FormatError(ex, query);
         }
         return Lists.newArrayList();
     }
@@ -61,7 +61,7 @@ public class ConsultaRepos implements UsuarioGitDB {
     @Override
     public GitToken ObtenerTokenDatos(String token) {
         GitToken temp = new GitToken();
-        try (Connection conn = querys.Database();
+        try (Connection conn = connectionBuilder.Database();
                 PreparedStatement consultaToken = conn.prepareStatement("");
                 ResultSet tokenSet = consultaToken.executeQuery()) {
 
@@ -81,11 +81,11 @@ public class ConsultaRepos implements UsuarioGitDB {
                     new ParamValue("git_nombre_url", repositorio.getGit_nombre_url(), JDBCType.VARCHAR),
                     new ParamValue("es_activo", repositorio.getEs_activo(), JDBCType.INTEGER),
                     new ParamValue("id_token", repositorio.getId_token(), JDBCType.INTEGER));
-            try (Connection conn = querys.Database()) {
-                boolean executable = querys.UpdateQuery(conn, query, valores);
+            try (Connection conn = connectionBuilder.Database()) {
+                boolean executable = connectionBuilder.UpdateQuery(conn, query, valores);
                 return executable;
             } catch (Exception ex) {
-                querys.FormatError(ex, query);
+                connectionBuilder.FormatError(ex, query);
             }
             return false;
         });
@@ -96,7 +96,7 @@ public class ConsultaRepos implements UsuarioGitDB {
     public CompletableFuture<Integer> ListarReposActivos() {
         Supplier<Integer> taskAsync = () -> {
             String consultas = "SELECT COUNT(id_repositorio) AS cantidad_repositorio FROM GitRepositorios WHERE sesion_activa = 1";
-            try (Connection conn = querys.Database()) {
+            try (Connection conn = connectionBuilder.Database()) {
                 Supplier<Integer> modeloRepo = () -> Integer.valueOf(0);
                 // aqui se necesita cargar los parametros de las columnas de la consulta
                 // por ejemplo el select con el nombre de sus referencias
@@ -107,10 +107,10 @@ public class ConsultaRepos implements UsuarioGitDB {
                         case "cantidad_repositorio" -> model = (Integer) value.getValor();
                     }
                 };
-                int result = querys.QueryModel(conn, consultas, consultaColumna, null, modeloRepo, setPropsFunc).get(0);
+                int result = connectionBuilder.QueryModel(conn, consultas, consultaColumna, null, modeloRepo, setPropsFunc).get(0);
                 return result;
             } catch (Exception e) {
-                querys.FormatError(e, consultas);
+                connectionBuilder.FormatError(e, consultas);
                 return 0;
             }
         };
@@ -121,28 +121,59 @@ public class ConsultaRepos implements UsuarioGitDB {
     public CompletableFuture<List<GitRepositorio>> ActivarRepositorios() {
         Supplier<List<GitRepositorio>> taskAsync = () -> {
             List<GitRepositorio> resultQuery = null;
-            String consultas = "SELECT id_repositorio, git_nombre_local, git_nombre_url FROM GitRepositorios WHERE sesion_activa = 1";
-            try (Connection conn = querys.Database()) {
+            String consultas = "SELECT id_repositorio, git_nombre_local, sesion_activa FROM GitRepositorios WHERE sesion_activa = 1";
+            try (Connection conn = connectionBuilder.Database()) {
                 Supplier<GitRepositorio> modeloRepo = GitRepositorio::new;
                 // aqui se necesita cargar los parametros de las columnas de la consulta
                 // por ejemplo el select con el nombre de sus referencias
                 List<ParamValue> consultaColumna = Lists.newArrayList(
-                        new ParamValue("cantidad_repositorio"));
+                        new ParamValue("id_repositorio"),
+                        new ParamValue("git_nombre_local"),
+                        new ParamValue("sesion_activa"));
                 BiConsumer<GitRepositorio, ParamValue> setPropsFunc = (model, value) -> {
                     switch (value.getParametro()) {
-                        case "id_repositorio" -> model.setId_repositorio((Integer)value.getValor());
+                        case "id_repositorio" -> model.setId_repositorio((Integer) value.getValor());
                         case "git_nombre_local" -> model.setGit_nombre_local(String.valueOf(value.getValor()));
-                        case "git_nombre_url" -> model.setGit_nombre_url(String.valueOf(value.getValor()));
+                        case "sesion_activa" -> model.setEs_activo((Integer) value.getValor());
                     }
                 };
-                resultQuery = querys.QueryModel(conn, consultas, consultaColumna, null, modeloRepo, setPropsFunc);
+                resultQuery = connectionBuilder.QueryModel(conn, consultas, consultaColumna, null, modeloRepo, setPropsFunc);
                 return resultQuery;
             } catch (Exception e) {
-                querys.FormatError(e, consultas);
+                connectionBuilder.FormatError(e, consultas);
                 return Lists.newArrayList();
             }
         };
         return CompletableFuture.supplyAsync(taskAsync);
     }
-
+    
+    public CompletableFuture<GitRepositorio> ObtenerRuta(String rutaLocal) {
+        return CompletableFuture.supplyAsync(() -> {
+            String query = "SELECT git_nombre_local, sesion_activa FROM GitRepositorios WHERE git_nombre_local = ?";
+            GitRepositorio resultado = null;
+            try (Connection conn = connectionBuilder.Database()) {
+                Supplier<GitRepositorio> instance = GitRepositorio::new;
+                List<ParamValue> columns = Lists.newArrayList(
+                    new ParamValue("git_nombre_local"),
+                    new ParamValue("sesion_activa")
+                );
+                Supplier<List<ParamValue>> refs = () -> Lists.newArrayList(
+                    new ParamValue(rutaLocal)
+                );
+                BiConsumer<GitRepositorio, ParamValue> setProps = (model, param) -> {
+                    switch (param.getParametro()) {
+                        case "git_nombre_local" -> model.setGit_nombre_local(String.valueOf(param.getValor()));
+                        case "sesion_activa" -> model.setEs_activo((Integer) param.getValor());
+                    }
+                };
+                List<GitRepositorio> repo = connectionBuilder.QueryModel(conn, query, columns, refs, instance, setProps);
+                if (!repo.isEmpty()) {
+                    resultado = repo.get(0);
+                }
+            } catch (Exception e) {
+                connectionBuilder.FormatError(e, query);
+            }
+            return resultado;
+        });
+    }
 }

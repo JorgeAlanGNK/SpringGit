@@ -18,6 +18,8 @@ public abstract class Controlador<K extends ActualizadorMenu, T> {
 
     public abstract void setModelo(T modelo);
 
+    public abstract K getDependenciaActual();
+
     protected T getModeloPrincipal() {
         return modeloPrincipal;
     }

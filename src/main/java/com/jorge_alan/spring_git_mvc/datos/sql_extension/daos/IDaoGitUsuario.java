@@ -15,4 +15,6 @@ public interface IDaoGitUsuario {
     CompletableFuture<Integer> CantidadRepositorios();
 
     CompletableFuture<List<GitRepositorio>> ActivarRepositorios();
+
+    CompletableFuture<GitRepositorio> EstadoRuta(String ruta);
 }

@@ -169,66 +169,30 @@ public class IniciadorUsuario extends ActualizadorMenu {
         return operacion.IngresarRepoLocal(dir, null, 0, Integer.getInteger(token)).exceptionally(callErrorFunc);
     }
 
-    public CompletableFuture<List<ModeloRepositorio>> AperturaAplicativo() {
+    public CompletableFuture<List<String>> AperturaAplicativo() {
         IDaoGitUsuario tempConsultas = getDaoRepositorio();
-        BiFunction<Integer, List<GitRepositorio>, List<GitRepositorio>> tareaCantidad = (cantidad, info) -> {
+        BiFunction<Integer, List<GitRepositorio>, List<String>> tareaCantidad = (cantidad, info) -> {
             if (cantidad > 0) {
-                return info;
+                return info.stream()
+                        .filter(repositorio -> !Strings.isNullOrEmpty(repositorio.getGit_nombre_local())
+                                && repositorio.getSesion_activa() == 1)
+                        .map(GitRepositorio::getGit_nombre_local)
+                        .collect(Collectors.toList());
             }
             return Lists.newArrayList();
-        };
-        Function<List<GitRepositorio>, List<CompletableFuture<ModeloRepositorio>>> abrirRepos = (repositorios) -> {
-            List<CompletableFuture<ModeloRepositorio>> tareasGit = Lists.newArrayList();
-            if (repositorios.size() > 0) {
-                for (GitRepositorio repo : repositorios) {
-                    String nombreLocal = repo.getGit_nombre_local();
-                    CompletableFuture<Set<RamaModelo>> tareaRamaLocal = getComandos()
-                            .ObtenerRamas(nombreLocal).exceptionally((error) -> Sets.newHashSet());
-                    CompletableFuture<Set<RamaModelo>> tareaRamaRemoto = getComandos()
-                            .ObtenerRemotos(nombreLocal).exceptionally((error) -> Sets.newHashSet());
-                    CompletableFuture<List<StashModelo>> tareaStash = getComandos()
-                            .ObtenerStashes(nombreLocal).exceptionally((error) -> Lists.newArrayList());
-                    CompletableFuture<Set<RemotoModelo>> tareaRemotoUrl = getComandos().ObtenerUrl(nombreLocal)
-                            .exceptionally((error) -> Sets.newHashSet());
-                    Function<Void, ModeloRepositorio> verificarRepositorio = (v) -> {
-                        EstadoSituacion objDto = new EstadoSituacion();
-                        ModeloRepositorio objDtoRepoModel = new ModeloRepositorio(objDto);
-                        objDtoRepoModel.setRepositorios(Sets.newHashSet());
-                        objDtoRepoModel.setRepositorioActual(nombreLocal);
-                        objDtoRepoModel.setActivo(!tareaRamaRemoto.join().isEmpty());
-                        objDtoRepoModel.setRamasLocales(tareaRamaLocal.join());
-                        objDtoRepoModel.setRamasRemotas(tareaRamaRemoto.join());
-                        objDtoRepoModel.setStashes(tareaStash.join());
-                        objDtoRepoModel.setRemotosUrl(tareaRemotoUrl.join());
-                        if (!Strings.isNullOrEmpty(super.getRepositorio())) {
-                            objDtoRepoModel.getRepositorios().add(super.getRepositorio());
-                        }
-                        objDto.setTipoEnum(EstadoEnum.OK);
-                        objDto.setMensaje("");
-                        return objDtoRepoModel;
-                    };
-                    CompletableFuture<ModeloRepositorio> resultDto = CompletableFuture
-                            .allOf(tareaRamaLocal, tareaRamaRemoto, tareaStash, tareaRemotoUrl)
-                            .thenApply(verificarRepositorio);
-                    tareasGit.add(resultDto);
-                }
-                return tareasGit;
-            }
-            return Lists.newArrayList();
-        };
-        Function<List<GitRepositorio>, CompletionStage<List<ModeloRepositorio>>> execute = (repositorios) -> {
-            List<CompletableFuture<ModeloRepositorio>> listaFuturos = abrirRepos.apply(repositorios);
-            if (listaFuturos.isEmpty()) {
-                return CompletableFuture.completedFuture(Lists.newArrayList());
-            }
-            CompletableFuture<Void> todos = CompletableFuture.allOf(listaFuturos.toArray(new CompletableFuture[0]));
-            return todos.thenApply(v -> listaFuturos.stream()
-                    .map(CompletableFuture::join)
-                    .collect(Collectors.toList()));
         };
         CompletableFuture<Integer> repositoriosAbiertos = tempConsultas.CantidadRepositorios();
         CompletableFuture<List<GitRepositorio>> listaRepos = tempConsultas.ActivarRepositorios();
-        return repositoriosAbiertos.thenCombine(listaRepos, tareaCantidad).thenCompose(execute);
+        return repositoriosAbiertos.thenCombine(listaRepos, tareaCantidad);
+    }
+
+    public CompletableFuture<Boolean> InicioVerificacion() {
+        IDaoGitUsuario tempConsultas = getDaoRepositorio();
+        Function<GitRepositorio, Boolean> waitTask = (repositorio) -> {
+            return repositorio != null;
+        };
+        CompletableFuture<GitRepositorio> obtenerRepositorio = tempConsultas.EstadoRuta(getRepositorio());
+        return obtenerRepositorio.thenApply(waitTask);
     }
 
 }

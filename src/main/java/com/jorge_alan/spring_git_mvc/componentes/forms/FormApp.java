@@ -2,60 +2,31 @@ package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.List;
 
 import javax.swing.JDialog;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
-import com.jorge_alan.spring_git_mvc.datos.capaDatos.GitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.daos.DaoGitUsuario;
-import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
-import javax.swing.JLayeredPane;
+import com.jorge_alan.spring_git_mvc.modelos.modules.ModuloInicioUsuario;
 
 public class FormApp extends javax.swing.JFrame {
 
     private static Dimension winDim = Toolkit.getDefaultToolkit().getScreenSize();
     private static java.util.logging.Logger logger;
-    private static ConstruccionNavegador navegador;// se encarga de verificar diseños y verificaciones de ciertos
-    // componentes
-    private static IniciadorUsuario manejoUsuario;// capa de negocio;
-    private static ControladorFormulario controladorForm;// carga del controlador
+    private ModuloInicioUsuario moduloSesion;
     private boolean validarOperaciones;
 
     public FormApp() {
         winDim = Toolkit.getDefaultToolkit().getScreenSize();
         logger = java.util.logging.Logger.getLogger(FormApp.class.getName());
-        navegador = IniciarNavegador(this);
-        manejoUsuario = CargaInicio();
-        controladorForm = FormUsuario();
+        moduloSesion = new ModuloInicioUsuario(this);
         setVisible(true);
         LookAndFeel();
         initComponents();
         VistaInit();
-    }
-
-    private static ConstruccionNavegador IniciarNavegador(FormApp app) {
-        if (navegador == null) {
-            return new ConstruccionNavegador(app);
-        }
-        return navegador;
-    }
-
-    private static IniciadorUsuario CargaInicio() {
-        if (manejoUsuario == null) {
-            return new IniciadorUsuario(
-                    new GitVisualizacion(),
-                    new DaoGitUsuario());
-        }
-        return manejoUsuario;
-    }
-
-    private static ControladorFormulario FormUsuario() {
-        if (controladorForm == null) {
-            controladorForm = new ControladorFormulario(manejoUsuario);
-        }
-        return controladorForm;
     }
 
     public void VistaInit() {// funcion principal para la capacitacion del usuario
@@ -64,6 +35,8 @@ public class FormApp extends javax.swing.JFrame {
         revalidate();
         repaint();
         // comenzar a tomar el primer repositorio
+        String ruta = null;
+        ConstruccionNavegador navegador = moduloSesion.getNavegador();
         if (!navegador.ComprobacionGITVersion()) {// verificamos si tiene GIT instalado
             // en caso de no tenerlo no podra realizar otra operacion
             // ansible ayuda a instalar este componente
@@ -75,7 +48,29 @@ public class FormApp extends javax.swing.JFrame {
         } else {
             validarOperaciones = true;
         }
-        navegador.setControlador(controladorForm);
+        if (validarOperaciones) {
+            boolean hayNavegaciones = navegador.AbrirRepositorios().size() > 0;
+            // apertura de sesiones, si existen activos, se abriran solo los activos, sino,
+            // puede escoger el repositorio que desea verificiar, para volver activarla
+            if (hayNavegaciones) {
+                // todos los paneles se encuentran agregados, no es necesario insertarlos
+                // nuevamente
+                List<String> repositorios_locales = navegador.AbrirRepositorios();
+                for (String repositorio_local : repositorios_locales) {
+                    navegador.AgregarPanelTab(repositorio_local, false);
+                }
+            } else {
+                //se agrega un nuevo repositorio, en caso de no tener sesiones abiertas
+                ruta = navegador.RutaFisica();
+                if (Strings.isNullOrEmpty(ruta)) {
+                    JOptionPane.showMessageDialog(this, "la ruta del GIT es invalida", "Ruta desconocida",
+                            JOptionPane.WARNING_MESSAGE);
+                } else {
+                    navegador.AgregarPanelTab(ruta, true);
+                }
+            }
+        }
+        navegador.setControlador(moduloSesion.getControladorForm());
         repaint();
         revalidate();
     }
@@ -89,13 +84,12 @@ public class FormApp extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         variedadLayoutPanel = new javax.swing.JLayeredPane();
         menuNoRepoFound = new com.jorge_alan.spring_git_mvc.componentes.forms.MenuSelection();
-        menuNoRepoFound.setNavegador(navegador);
+        menuNoRepoFound.setNavegador(moduloSesion.getNavegador());
         tabbedPaneCustom1 = new com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom();
         panelContenedorMenu1 = new com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu();
         accesoOperacion = new javax.swing.JMenuBar();
@@ -154,7 +148,7 @@ public class FormApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ItemTokenActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ItemTokenActionPerformed
-        controladorForm.VerificarRemoto().thenAccept((result) -> {
+        moduloSesion.getControladorForm().VerificarRemoto().thenAccept(result -> {
             ModalTokenUrl modalToken = new ModalTokenUrl(this, true);
             boolean resultado = result;
             // modalToken.setActivarUrlRemoto(vistaRepo.getFormRepositorio().isActivo());
@@ -166,17 +160,18 @@ public class FormApp extends javax.swing.JFrame {
         String urlRemoto = JOptionPane.showInputDialog(this,
                 "Ingrese la url de su repositorio Remoto que le proporciona GitHub de este repositorio local",
                 "Repositorio GitHub", JOptionPane.INFORMATION_MESSAGE);
-        manejoUsuario.ObtenerTareaPrincipal(!Strings.isNullOrEmpty(urlRemoto)).thenAccept((resultado) -> {
-            // ModeloRepositorio actual = vistaRepo.getFormRepositorio();
-            // actual.setRamasLocales(resultado.getRamasLocales());
-            // actual.setRamasRemotas(resultado.getRamasRemotas());
-            // actual.setStashes(resultado.getStashes());
-            // actual.setRemotosUrl(resultado.getRemotosUrl());
-            // actual.setActivo(resultado.getRemotosUrl().size() == 0);
-            // ModalTokenUrl modalToken = new ModalTokenUrl(this, true);
-            // modalToken.setActivarUrlRemoto(actual.isActivo());
-            // CenterInfoModal(modalToken);
-        });
+        moduloSesion.getManejoUsuario().ObtenerTareaPrincipal(!Strings.isNullOrEmpty(urlRemoto))
+                .thenAccept((resultado) -> {
+                    // ModeloRepositorio actual = vistaRepo.getFormRepositorio();
+                    // actual.setRamasLocales(resultado.getRamasLocales());
+                    // actual.setRamasRemotas(resultado.getRamasRemotas());
+                    // actual.setStashes(resultado.getStashes());
+                    // actual.setRemotosUrl(resultado.getRemotosUrl());
+                    // actual.setActivo(resultado.getRemotosUrl().size() == 0);
+                    // ModalTokenUrl modalToken = new ModalTokenUrl(this, true);
+                    // modalToken.setActivarUrlRemoto(actual.isActivo());
+                    // CenterInfoModal(modalToken);
+                });
     }// GEN-LAST:event_ItemUrlRemotoActionPerformed
 
     private void itemCrearRepositorioActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_itemCrearRepositorioActionPerformed

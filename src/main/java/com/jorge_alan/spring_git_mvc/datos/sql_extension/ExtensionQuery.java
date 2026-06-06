@@ -51,7 +51,7 @@ public class ExtensionQuery {
                 List<ParamValue> getReferences = references.get();
                 // se encarga de enviar y acaparar los valores hacia la consulta
                 for (int i = 1; i <= getReferences.size(); i++) {
-                    ps.setObject(i, getReferences.get(i - 1));
+                    ps.setObject(i, getReferences.get(i - 1).getValor());
                 }
             }
             try (ResultSet rs = ps.executeQuery()) {
@@ -63,36 +63,6 @@ public class ExtensionQuery {
                         Object resultColumn = rs.getObject(nameColumn.getParametro());
                         nameColumn.setValor(resultColumn);
                         setProps.accept(instanceModel, nameColumn);
-                    }
-                    // se envia el modelo completo con los valores de cada fila
-                    resultList.add(instanceModel);
-                }
-            }
-            return resultList;
-        }
-    }
-
-    public <T> List<T> QueryModel(Connection db, String query, List<ParamValue> columnsName,
-            Supplier<List<ParamValue>> references, Supplier<T> getInstance, BiFunction<T, ParamValue, T> setProps)
-            throws SQLException, InterruptedException {
-        List<T> resultList = Lists.newArrayList();
-        try (PreparedStatement ps = db.prepareStatement(query)) {
-            if (query.contains("?")) {
-                List<ParamValue> getReferences = references.get();
-                // se encarga de enviar y acaparar los valores hacia la consulta
-                for (int i = 1; i <= getReferences.size(); i++) {
-                    ps.setObject(i, getReferences.get(i - 1));
-                }
-            }
-            try (ResultSet rs = ps.executeQuery()) {
-                // se ejecuta la consulta y hay que obtener los valores
-                while (rs.next()) {
-                    // se lee por fila, hay que tomar los valores de la columna de cada fila
-                    T instanceModel = getInstance.get();
-                    for (ParamValue nameColumn : columnsName) {
-                        Object resultColumn = rs.getObject(nameColumn.getParametro());
-                        nameColumn.setValor(resultColumn);
-                        instanceModel = setProps.apply(instanceModel, nameColumn);
                     }
                     // se envia el modelo completo con los valores de cada fila
                     resultList.add(instanceModel);

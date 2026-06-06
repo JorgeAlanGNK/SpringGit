@@ -41,5 +41,10 @@ public class DaoGitUsuario implements IDaoGitUsuario {
     public CompletableFuture<List<GitRepositorio>> ActivarRepositorios() {
         return info.ActivarRepositorios();
     }
+
+    @Override
+    public CompletableFuture<GitRepositorio> EstadoRuta(String ruta) {
+        return info.ObtenerRuta(ruta);
+    }
     
 }

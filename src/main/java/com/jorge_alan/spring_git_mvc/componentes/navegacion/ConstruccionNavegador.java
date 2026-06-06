@@ -1,16 +1,17 @@
 package com.jorge_alan.spring_git_mvc.componentes.navegacion;
 
 import java.awt.CardLayout;
-import java.awt.Container;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -87,7 +88,7 @@ public class ConstruccionNavegador {
         return ruta;
     }
 
-    public void AgregarPanelTab(String nuevoEnlace) {
+    public void AgregarPanelTab(String nuevoEnlace, boolean insertarRepositorio) {
         // falta quitar la ruta que se puede obtener esta informacion del modelo.
         int separatorFinal = nuevoEnlace.lastIndexOf("\\");
         if (separatorFinal != -1) {
@@ -117,7 +118,9 @@ public class ConstruccionNavegador {
                         cardLayout.show(app.getVariedadLayoutPanel(), CardConstante.CARD_TABBED_PANE_CUSTOM);
                         muestraRepos = app.getTabbedPaneCustom1().getTabCount() > 0;
                         // ingresamos a la base de datos
-                        ObtenerPanelSeleccionado(!response.getRamasRemotas().isEmpty());
+                        if (insertarRepositorio) {
+                            ObtenerPanelSeleccionado(!response.getRamasRemotas().isEmpty());
+                        }
                         app.repaint();
                         app.revalidate();
                     } else {
@@ -129,7 +132,6 @@ public class ConstruccionNavegador {
                     }
                 });
             });// aqui obtiene la informacion del repositorio
-
         }
     }
 
@@ -205,6 +207,14 @@ public class ConstruccionNavegador {
 
     public void setControlador(ControladorFormulario controlador) {
         this.controlador = controlador;
+    }
+
+    public List<String> AbrirRepositorios() {
+        CompletableFuture<List<String>> tarea = controlador.InicioRepositoriosAbiertos();
+        Function<List<String>, List<String>> transformador = (repositorios) -> {
+            return repositorios;
+        };
+        return tarea.thenApply(transformador).join();
     }
 
     private static final class CardConstante {
