@@ -37,6 +37,7 @@ public class FormApp extends javax.swing.JFrame {
         // comenzar a tomar el primer repositorio
         String ruta = null;
         ConstruccionNavegador navegador = moduloSesion.getNavegador();
+        navegador.setControlador(moduloSesion.getControladorForm());
         if (!navegador.ComprobacionGITVersion()) {// verificamos si tiene GIT instalado
             // en caso de no tenerlo no podra realizar otra operacion
             // ansible ayuda a instalar este componente

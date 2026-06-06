@@ -1,6 +1,9 @@
 package com.jorge_alan.spring_git_mvc.datos.sql_extension;
 
 import java.sql.SQLType;
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 public class ParamValue {
 
@@ -55,4 +58,5 @@ public class ParamValue {
     public void setTipo(SQLType tipo) {
         this.tipo = tipo;
     }
+    
 }

@@ -86,7 +86,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <excludes>
-                    <exclude>database/**/*.db</exclude>
+                    <exclude>database/**</exclude>
                 </excludes>
             </resource>
         </resources>

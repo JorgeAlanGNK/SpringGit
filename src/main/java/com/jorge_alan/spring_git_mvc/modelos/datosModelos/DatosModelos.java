@@ -1,7 +1,5 @@
 package com.jorge_alan.spring_git_mvc.modelos.datosModelos;
 
-import java.util.Date;
-
 public class DatosModelos {
 
     private DatosModelos() throws InterruptedException {
@@ -10,33 +8,35 @@ public class DatosModelos {
 
     public static final class GitToken {
 
-        private int id_token;
-        private String token_ref;
-        private Date fecha_caducidad;
+        private Integer id_token;
+        private String git_token;
+        private String fecha_caducidad;
         private String descripcion;
-        private String nombre_repo;
+        private String url_repo;
+        private Integer seleccionar_token;
+        private String organizacion;
 
-        public int getId_token() {
+        public Integer getId_token() {
             return id_token;
         }
 
-        public void setId_token(int id_token) {
+        public void setId_token(Integer id_token) {
             this.id_token = id_token;
         }
 
-        public String getToken_ref() {
-            return token_ref;
+        public String getGit_token() {
+            return git_token;
         }
 
-        public void setToken_ref(String token_ref) {
-            this.token_ref = token_ref;
+        public void setGit_token(String git_token) {
+            this.git_token = git_token;
         }
 
-        public Date getFecha_caducidad() {
+        public String getFecha_caducidad() {
             return fecha_caducidad;
         }
 
-        public void setFecha_caducidad(Date fecha_caducidad) {
+        public void setFecha_caducidad(String fecha_caducidad) {
             this.fecha_caducidad = fecha_caducidad;
         }
 
@@ -48,12 +48,28 @@ public class DatosModelos {
             this.descripcion = descripcion;
         }
 
-        public String getNombre_repo() {
-            return nombre_repo;
+        public String getUrl_repo() {
+            return url_repo;
         }
 
-        public void setNombre_repo(String nombre_repo) {
-            this.nombre_repo = nombre_repo;
+        public void setUrl_repo(String url_repo) {
+            this.url_repo = url_repo;
+        }
+
+        public Integer getSeleccionar_token() {
+            return seleccionar_token;
+        }
+
+        public void setSeleccionar_token(Integer seleccionar_token) {
+            this.seleccionar_token = seleccionar_token;
+        }
+
+        public String getOrganizacion() {
+            return organizacion;
+        }
+
+        public void setOrganizacion(String organizacion) {
+            this.organizacion = organizacion;
         }
 
     }

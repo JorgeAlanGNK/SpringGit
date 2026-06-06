@@ -6,7 +6,6 @@ import java.util.concurrent.CompletableFuture;
 import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory.DefaultConfiguration;
 import com.jorge_alan.spring_git_mvc.datos.sql_extension.operators.ConsultaRepos;
 import com.jorge_alan.spring_git_mvc.datos.sql_extension.operators.UsuarioGitDB;
-import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
 import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 
 public class DaoGitUsuario implements IDaoGitUsuario {
@@ -17,11 +16,6 @@ public class DaoGitUsuario implements IDaoGitUsuario {
     public DaoGitUsuario() {
         config = DefaultConfiguration.GetInstance();
         info = new ConsultaRepos(config);
-    }
-    
-    @Override
-    public List<GitToken> TokenActivos() {
-        return info.ObtenerTokensActivos();
     }
 
     @Override
