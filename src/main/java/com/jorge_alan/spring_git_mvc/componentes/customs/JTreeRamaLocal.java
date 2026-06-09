@@ -5,7 +5,6 @@ import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 import com.jorge_alan.spring_git_mvc.componentes.extension.EstructuraNavegacion;
 import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
-import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;

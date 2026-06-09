@@ -7,6 +7,7 @@ public class GitRepositorio {
     private String git_nombre_url;
     private Integer es_activo;
     private Integer id_token;
+    private Integer sesion_activa;
 
     public GitRepositorio() {
     }
@@ -56,6 +57,14 @@ public class GitRepositorio {
 
     public void setId_token(Integer id_token) {
         this.id_token = id_token;
+    }
+
+    public Integer getSesion_activa() {
+        return sesion_activa;
+    }
+
+    public void setSesion_activa(Integer sesion_activa) {
+        this.sesion_activa = sesion_activa;
     }
 
 }

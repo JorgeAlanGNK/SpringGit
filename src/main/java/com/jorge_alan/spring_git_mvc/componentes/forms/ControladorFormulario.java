@@ -2,6 +2,8 @@ package com.jorge_alan.spring_git_mvc.componentes.forms;
 
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
+
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ControladorFormulario extends Controlador<IniciadorUsuario, ModeloRepositorio> {
@@ -14,6 +16,11 @@ public class ControladorFormulario extends Controlador<IniciadorUsuario, ModeloR
 
     public ControladorFormulario(IniciadorUsuario menuActual) {
         super(menuActual);
+    }
+
+    @Override
+    public IniciadorUsuario getDependenciaActual() {
+        return getControladorActual();
     }
 
     @Override
@@ -44,7 +51,24 @@ public class ControladorFormulario extends Controlador<IniciadorUsuario, ModeloR
     public CompletableFuture<Boolean> VerificarRemoto(String repositorio) {
         IniciadorUsuario negocio = super.getControladorActual();
         negocio.EnviarRepositorio(repositorio);//necesario para revisar
-        return negocio.ExisteRemotoUrl();
+        return negocio.InicioVerificacion();
+    }
+    
+    public CompletableFuture<Boolean> IngresarRepositorio(String repositorio) {
+        IniciadorUsuario negocio = getControladorActual();
+        negocio.EnviarRepositorio(repositorio);
+        return negocio.RegistroRepoLocal(repositorio, null, false);
+    }
+
+    public CompletableFuture<Boolean> IngresarRepositorio(String repositorio, boolean activarRemoto) {
+        IniciadorUsuario negocio = getControladorActual();
+        negocio.EnviarRepositorio(repositorio);
+        return negocio.RegistroRepoLocal(repositorio, null, activarRemoto);
+    }
+
+    public CompletableFuture<List<String>> InicioRepositoriosAbiertos() {
+        IniciadorUsuario negocio = getControladorActual();
+        return negocio.AperturaAplicativo();
     }
 
 }

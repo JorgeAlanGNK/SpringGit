@@ -2,6 +2,7 @@ package com.jorge_alan.spring_git_mvc.componentes.customs;
 
 import javax.swing.JTabbedPane;
 import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 
@@ -11,9 +12,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class TabbedPaneCustom extends JTabbedPane {
+
+    //getTabCount no se basa en index
 
     private ImagenEstatica imagenComponente = new ImagenEstatica();
     private DesignTab basicoDesign = new DesignTab();
@@ -41,6 +45,17 @@ public class TabbedPaneCustom extends JTabbedPane {
         personalizacion.setBounds(0, 0, this.basicoDesign.getWidthRect(), this.basicoDesign.getHeigthRect());
         //escoger el indice actual para la pestaña del tab
         personalizacion.setSelected(index == getSelectedIndex());
+    }
+    
+    public PanelContenedorMenu getSelectedTab() {
+        //regresa la celda personalizada
+        int index = getSelectedIndex();
+        if(index > getTabCount() - 1) {
+            JOptionPane.showMessageDialog(this, "No se puede iniciar el modelo correspondiente");
+            return null;
+        }
+        PanelContenedorMenu current = (PanelContenedorMenu) super.getTabComponentAt(index);
+        return current;
     }
 
     private static final class DesignTab extends BasicTabbedPaneUI {

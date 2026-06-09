@@ -1,7 +1,7 @@
 package com.jorge_alan.spring_git_mvc.negocios.bridge;
 
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.IGitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.IDaoGitUsuario;
+import com.jorge_alan.spring_git_mvc.datos.sql_extension.daos.IDaoGitUsuario;
 
 public abstract class ActualizadorMenu {
 
@@ -29,4 +29,9 @@ public abstract class ActualizadorMenu {
     protected void setRepositorio(String repositorio) {
         this.repositorio = repositorio;
     }
+
+    public IDaoGitUsuario getDaoRepositorio() {
+        return daoRepositorio;
+    }
+    
 }

@@ -25,12 +25,12 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace pref="239" max="32767" attributes="0"/>
+              <EmptySpace pref="273" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="panelToken" min="-2" pref="412" max="-2" attributes="0"/>
                   <Component id="areaLogo" min="-2" pref="342" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="150" max="32767" attributes="0"/>
+              <EmptySpace pref="187" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -40,8 +40,8 @@
               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
               <Component id="areaLogo" min="-2" pref="128" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panelToken" min="-2" pref="263" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <Component id="panelToken" pref="301" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -124,54 +124,58 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                          <Component id="etiquetaDescripcion" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="activarTokenCheck" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <EmptySpace pref="47" max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
                           <Component id="btnAceptar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnCancelar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="fechaDesc" min="-2" pref="117" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="formatDate" min="-2" pref="227" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="descUrlRemoto" min="-2" pref="68" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="campoUrlRemoto" min="-2" pref="257" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="fechaDesc" min="-2" pref="117" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="formatDate" min="-2" pref="227" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Component id="descToken" min="-2" pref="42" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                                  <Component id="tokenPathGit" min="-2" pref="227" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="descGeneral" alignment="0" min="-2" pref="83" max="-2" attributes="0"/>
-                                      <Component id="descUrlRemoto" alignment="0" min="-2" pref="68" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="campoDescGeneral" max="32767" attributes="0"/>
-                                      <Component id="campoUrlRemoto" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="descGeneral" min="-2" pref="68" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                                  <Component id="campoEdicion1" min="-2" pref="261" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
+              </Group>
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="descToken" min="-2" pref="65" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="campoEdicion2" min="-2" pref="259" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="etiquetaDescripcion" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="activarTokenCheck" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <EmptySpace pref="47" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -182,8 +186,8 @@
                   <Component id="etiquetaDescripcion" min="-2" pref="44" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="descToken" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="tokenPathGit" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="campoEdicion2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="descToken" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -193,21 +197,21 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="descGeneral" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="campoDescGeneral" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="campoEdicion1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace pref="28" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="campoUrlRemoto" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="descUrlRemoto" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="descUrlRemoto" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="campoUrlRemoto" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                   <Component id="activarTokenCheck" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="btnCancelar" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnAceptar" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btnAceptar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnCancelar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="34" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -249,8 +253,6 @@
             <Property name="text" type="java.lang.String" value="Fecha de caducidad:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JPasswordField" name="tokenPathGit">
-        </Component>
         <Component class="javax.swing.JFormattedTextField" name="formatDate">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
@@ -268,8 +270,6 @@
             <Property name="text" type="java.lang.String" value="Descripcion:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="campoDescGeneral">
-        </Component>
         <Component class="javax.swing.JLabel" name="descUrlRemoto">
           <Properties>
             <Property name="text" type="java.lang.String" value="Url Remoto:"/>
@@ -278,10 +278,20 @@
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="descUrlRemoto.setVisible(activarUrlRemoto);"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JTextField" name="campoUrlRemoto">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="campoUrlRemoto.setVisible(activarUrlRemoto);"/>
-          </AuxValues>
+        <Component class="com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion" name="campoUrlRemoto">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="campoEdicion1"/>
+          </Properties>
+        </Component>
+        <Component class="com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion" name="campoEdicion1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="campoEdicion1"/>
+          </Properties>
+        </Component>
+        <Component class="com.jorge_alan.spring_git_mvc.componentes.customs.CampoEdicion" name="campoEdicion2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="campoEdicion2"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
