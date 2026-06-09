@@ -5,13 +5,10 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Map.Entry;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -32,22 +29,63 @@ public class ExtensionQuery {
         return conn;
     }
 
-    public PreparedStatement SendProperties(Connection conn, String query, Object... props) throws SQLException {
+    public PreparedStatement SendProperties(Connection conn, String query, List<String> props) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(query);
-        if (!Objects.isNull(props) && props.length > 0) {
-            for(int i = 0; i < props.length; i++){
-                ps.setObject(i, props[i]);
+        if (!Objects.isNull(props) && props.size() > 0) {
+            for (int i = 1; i <= props.size(); i++) {
+                ps.setObject(i, props.get(i - 1));
             }
         }
         return ps;
     }
 
+    public <T> T GetProperty(T model, ResultSet rs, Class<T> modelClass, String... props)
+            throws Exception {
+        Objects.requireNonNull(modelClass);
+        if (!EsPrimitivo(modelClass)) {
+            T getInstance = modelClass.getDeclaredConstructor().newInstance();
+            while (rs.next()) {
+                for (int i = 0; props.length > 0; i++) {
+                    Field property = getInstance.getClass().getDeclaredField(props[i]);
+                    property.setAccessible(true);
+                    Class<?> typeClass = property.getType();
+                    GetPrimitive(rs, typeClass, props[i], property);
+                }
+            }
+            return getInstance;
+        }
+        return (T) model;
+    }
+
+    public <T> List<T> GetProperties(ResultSet rs, Class<T> modelClass, String... props)
+            throws Exception {
+        Objects.requireNonNull(modelClass);
+        if (!EsPrimitivo(modelClass)) {
+            List<T> tempArr = Lists.newArrayList();
+            while (rs.next()) {
+                T getInstance = modelClass.getDeclaredConstructor().newInstance();
+                for (int i = 0; props.length > 0; i++) {
+                    Field property = getInstance.getClass().getDeclaredField(props[i]);
+                    property.setAccessible(true);
+                    Class<?> typeClass = property.getType();
+                    GetPrimitive(rs, typeClass, props[i], property);
+                }
+                tempArr.add(getInstance);
+            }
+            return tempArr;
+        }
+        return Lists.newArrayList();
+    }
+
     public List<String> FormatoColumnas(String query) {
-        return Lists.newArrayList(
-                query.substring(query.indexOf("SELECT"), query.lastIndexOf("FROM"))
+        List<String> data = Lists.newArrayList(query.substring(query.indexOf("SELECT"), query.lastIndexOf("FROM"))
                         .replace("SELECT", "")
                         .trim()
-                        .split(","));
+                        .split(","))
+                        .stream()
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+        return data;
     }
 
     public void FormatError(Throwable ex, String query) {
@@ -70,15 +108,32 @@ public class ExtensionQuery {
                 || tipo == Boolean.class;
     }
 
-    private <T> void AssignModel(final Map<String, Object> propsQuery, final T model) throws Exception {
-        Map<String, Field> fieldMap = Arrays.stream(model.getClass().getDeclaredFields())
-                .collect(Collectors.toMap(Field::getName, Function.identity()));
-        for (Entry<String, Object> prop : propsQuery.entrySet()) {
-            Field campo = fieldMap.get(prop.getKey());
-            if (campo != null) {
-                campo.setAccessible(true);
-                campo.set(prop.getKey(), prop.getValue());
-            }
+    private <T> void GetPrimitive(ResultSet rs, Class<?> primitveClass, String colName, Field sendValue)
+            throws SQLException, IllegalAccessException {
+        if (primitveClass == String.class) {
+            String value = rs.getString(colName);
+            sendValue.set(sendValue, value);
+        } else if (primitveClass == Integer.class) {
+            int value = rs.getInt(colName);
+            sendValue.setInt(sendValue, value);
+        } else if (primitveClass == Double.class) {
+            double value = rs.getDouble(colName);
+            sendValue.setDouble(sendValue, value);
+        } else if (primitveClass == Long.class) {
+            long value = rs.getLong(colName);
+            sendValue.setLong(sendValue, value);
+        } else if (primitveClass == Float.class) {
+            float value = rs.getFloat(colName);
+            sendValue.setFloat(sendValue, value);
+        } else if (primitveClass == Character.class) {
+            char value = rs.getString(colName).charAt(0);
+            sendValue.setChar(sendValue, value);
+        } else if (primitveClass == Byte.class) {
+            byte value = rs.getByte(colName);
+            sendValue.setByte(sendValue, value);
+        } else if (primitveClass == Boolean.class) {
+            boolean value = rs.getBoolean(colName);
+            sendValue.setBoolean(sendValue, value);
         }
     }
 }

@@ -27,7 +27,8 @@ public class ConsultaRepos implements UsuarioGitDB {
             GitToken temp = null;
             String query = "SELECT id_token, git_token, fecha_caducidad, url_repo, seleccionar_token, organizacion FROM GitRepositorios WHERE git_token = ?";
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = connectionBuilder.SendProperties(conn, query, token);
+                    PreparedStatement ps = connectionBuilder.SendProperties(conn, query,
+                            connectionBuilder.FormatoColumnas(query));
                     ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     temp = new GitToken();
@@ -54,10 +55,7 @@ public class ConsultaRepos implements UsuarioGitDB {
         return CompletableFuture.supplyAsync(() -> {
             try (Connection conn = connectionBuilder.Database();
                     PreparedStatement ps = connectionBuilder.SendProperties(conn, query,
-                            repositorio.getGit_nombre_local(),
-                            repositorio.getGit_nombre_url(),
-                            repositorio.getEs_activo(),
-                            repositorio.getId_token())) {
+                            connectionBuilder.FormatoColumnas(query))) {
                 boolean hayDatos = ps.executeUpdate() > 0;
                 return hayDatos;
             } catch (Exception e) {
@@ -73,7 +71,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             String consultas = "SELECT COUNT(id_repositorio) AS cantidad_repositorio FROM GitRepositorios WHERE sesion_activa = 1";
             Integer cantidad = null;
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = conn.prepareStatement(consultas);
+                    PreparedStatement ps = connectionBuilder.SendProperties(conn, consultas, null);
                     ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     cantidad = rs.getInt("cantidad_repositorio");
@@ -93,7 +91,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             List<GitRepositorio> resultQuery = Lists.newArrayList();
             String consultas = "SELECT id_repositorio, git_nombre_local, sesion_activa FROM GitRepositorios WHERE sesion_activa = 1";
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = conn.prepareStatement(consultas);
+                    PreparedStatement ps = connectionBuilder.SendProperties(conn, consultas, connectionBuilder.FormatoColumnas(consultas));
                     ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     GitRepositorio tempModelo = new GitRepositorio();
