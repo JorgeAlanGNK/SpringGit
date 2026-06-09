@@ -1,0 +1,68 @@
+/.mvn
+.classpath
+.project
+.settings
+
+/.settings/*
+
+# Directorios de compilación de Maven/Gradle
+target/
+bin/
+
+# Logs
+*.log
+
+# Configuraciones de IDE (Eclipse, IntelliJ, VS Code)
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Archivos de paquetes
+*.jar
+*.war
+*.ear
+*.zip
+
+# Archivos temporales
+*.tmp
+*.swp
+*.DS_Store
+
+
+# Credenciales locales
+**/resources/
+*.pem
+
+**/database/
+*.db
+*.sqbpro
+# SQLite databases
+
+#Gestores automatizados para git
+**/bin
+**/obj
+**/out
+**/packages/
+*.user
+*.suo
+
+.vs/
+.vscode/
+.idea/
+
+**/publish/
+**/Release/
+**/Debug/
+
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+**/wwwroot/lib/
+**/wwwroot/dist/
+**/.temp/
+**/.cache/
+
