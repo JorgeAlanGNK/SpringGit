@@ -19,7 +19,7 @@ import java.util.Set;
 public class ComandoUpdate implements BufferComando {
 
     @Override
-    public Set<RamaModelo> LecturaRama(String resultStream) throws IOException, InterruptedException {
+    public Set<RamaModelo> LecturaRama(String resultStream) {
         Objects.requireNonNull(resultStream, "No se puede leer el buffer");
         Set<RamaModelo> ramaModelo = Sets.newHashSet();
         String[] lineas = resultStream.split("\\R+");
@@ -56,20 +56,22 @@ public class ComandoUpdate implements BufferComando {
     }
 
     @Override
-    public List<StashModelo> StashLectura(String streamResult) throws IOException, InterruptedException {
+    public List<StashModelo> StashLectura(String streamResult) {
         Objects.requireNonNull(streamResult, "No se puede leer el buffer");
         List<StashModelo> resultadoStash = Lists.newArrayList();
-        String[] lineas = streamResult.split("\\R+");
-        int count = -1;
-        for (String linea : lineas) {
-            count = count + 1;
-            resultadoStash.add(new StashModelo(linea, count));
+        if (!Strings.isNullOrEmpty(streamResult)) {
+            String[] lineas = streamResult.split("\\R+");
+            int count = -1;
+            for (String linea : lineas) {
+                count = count + 1;
+                resultadoStash.add(new StashModelo(linea, count));
+            }
         }
         return resultadoStash;
     }
 
     @Override
-    public boolean SwitchCambio(String streamResult, String branchSwitch) throws IOException, InterruptedException {
+    public boolean SwitchCambio(String streamResult, String branchSwitch) {
         Objects.requireNonNull(streamResult, "No se puede leer el archivo");
         Objects.requireNonNull(branchSwitch, "Rama desconocido, favor de revisar");
         String[] lineas = streamResult.split("\\R+");
@@ -91,7 +93,7 @@ public class ComandoUpdate implements BufferComando {
     }
 
     @Override
-    public List<RamaModelo> RamasRemotas(String streamResult) throws IOException, InterruptedException {
+    public List<RamaModelo> RamasRemotas(String streamResult) {
         Objects.requireNonNull(streamResult);
         String[] rama = streamResult.split("\\R+");
         List<RamaModelo> ramaResultado = Lists.newArrayList();
@@ -126,13 +128,13 @@ public class ComandoUpdate implements BufferComando {
     }
 
     @Override
-    public RemotoModelo RemotosUrl(String streamResult) throws IOException, InterruptedException {
+    public RemotoModelo RemotosUrl(String streamResult) {
         Objects.requireNonNull(streamResult);
         String[] remotos = streamResult.split("\\R+");
         RemotoModelo setUrlObj = new RemotoModelo();
         for (String remoto : remotos) {
             remoto = remoto.replace("origin", "").trim();
-            if(remoto.contains("(fetch)")) {
+            if (remoto.contains("(fetch)")) {
                 remoto = remoto.replace("(fetch)", "").trim().replace(".git", "").trim();
                 setUrlObj.setFetch(remoto);
             } else if (remoto.contains("(push)")) {

@@ -1,46 +1,44 @@
-package com.jorge_alan.spring_git_mvc.datos;
+package com.jorge_alan.spring_git_mvc.datos.sql_extension;
 
-import com.google.common.collect.Lists;
-import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.google.common.collect.Lists;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.DatosModelos.GitToken;
+import com.jorge_alan.spring_git_mvc.modelos.representaciones.GitRepositorio;
 
 public class ConsultaRepos implements UsuarioGitDB {
 
-    private InputStreamReader inDatabase;
-
     public ConsultaRepos() {
-        this.inDatabase = new InputStreamReader(ConsultaRepos.class.getClassLoader().getResourceAsStream("database\\gitUserDB.db"));
     }
 
     private Connection Database() throws SQLException, Exception, IOException {
-        BufferedReader reader = new BufferedReader(inDatabase);
-        String info = "";
-        Connection conn = null;
-        while ((info = reader.readLine()) != null) {
-            conn = DriverManager.getConnection(info);
+        try (InputStream input = getClass().getResourceAsStream("database\\gitUserDB.db")) {
+            if (input == null)
+                throw new SQLException("No exsite una base de datos temporal para este archivo");
+            Path tempFile = Files.createTempFile("gitUserDB", ".db");
+            Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            return DriverManager.getConnection("jdbc:sqlite:" + tempFile.toAbsolutePath());
         }
-        return conn;
     }
 
-    //los metodos para las querys, hay que separar
-    private boolean UpdateQuery(Connection database, String queryGeneral, Supplier<List<ParamValue>> referencias) throws SQLException, InterruptedException {
+    // los metodos para las querys, hay que separar
+    private boolean UpdateQuery(Connection database, String queryGeneral, Supplier<List<ParamValue>> referencias)
+            throws SQLException, InterruptedException {
         List<ParamValue> params = referencias.get();
         try (PreparedStatement ps = database.prepareStatement(queryGeneral)) {
             if (params != null && queryGeneral.contains("?")) {
@@ -52,8 +50,10 @@ public class ConsultaRepos implements UsuarioGitDB {
         }
     }
 
-    //referencias: siempre guardarlo en una variable.
-    private <T> List<T> QueryModel(Connection database, String queryGeneral, List<ParamValue> paramNames, Supplier<List<ParamValue>> referencias, Supplier<T> Initializer, BiConsumer<T, ParamValue> Props) throws SQLException, InterruptedException {
+    // referencias: siempre guardarlo en una variable.
+    private <T> List<T> QueryModel(Connection database, String queryGeneral, List<ParamValue> paramNames,
+            Supplier<List<ParamValue>> referencias, Supplier<T> Initializer, BiConsumer<T, ParamValue> Props)
+            throws SQLException, InterruptedException {
         List<ParamValue> params = referencias.get();
         List<T> valorActual = Lists.newArrayList();
         try (PreparedStatement ps = database.prepareStatement(queryGeneral)) {
@@ -85,8 +85,7 @@ public class ConsultaRepos implements UsuarioGitDB {
                 new ParamValue("token_ref", JDBCType.VARCHAR),
                 new ParamValue("fecha_caducidad", JDBCType.DATE),
                 new ParamValue("descripcion", JDBCType.VARCHAR),
-                new ParamValue("nombre_repo", JDBCType.VARCHAR)
-        );
+                new ParamValue("nombre_repo", JDBCType.VARCHAR));
         Supplier<GitToken> initializer = GitToken::new;
         BiConsumer<GitToken, ParamValue> setProps = (model, prop) -> {
             switch (prop.getParametro()) {
@@ -114,7 +113,9 @@ public class ConsultaRepos implements UsuarioGitDB {
     @Override
     public GitToken ObtenerTokenDatos(String token) {
         GitToken temp = new GitToken();
-        try (Connection conn = Database(); PreparedStatement consultaToken = conn.prepareStatement(""); ResultSet tokenSet = consultaToken.executeQuery()) {
+        try (Connection conn = Database();
+                PreparedStatement consultaToken = conn.prepareStatement("");
+                ResultSet tokenSet = consultaToken.executeQuery()) {
 
         } catch (Exception e) {
         }
@@ -122,16 +123,27 @@ public class ConsultaRepos implements UsuarioGitDB {
     }
 
     @Override
-    public Boolean RegistroRepositorio(String gitNombreLocal) {
-        String query = "INSERT INTO GitRepositorios(git_nombre_local) VALUES (?)";
-        Supplier<List<ParamValue>> referencias = () -> Lists.newArrayList(
-                new ParamValue("git_nombre_local", gitNombreLocal, JDBCType.VARCHAR)
-        );
-        try (Connection database = Database()) {
-
-        } catch (Exception e) {
-        }
-        return false;
+    public CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio) {
+        String query = "INSERT INTO GitRepositorios\n" + //
+                        "(git_nombre_local, git_nombre_url, es_activo, id_token)\n" + //
+                        "VALUES(?, ?, ?, ?);";
+        return CompletableFuture.supplyAsync(() -> {
+            Supplier<List<ParamValue>> valores = () -> Lists.newArrayList(
+                    new ParamValue("git_nombre_local", repositorio.getGit_nombre_local(), JDBCType.VARCHAR),
+                    new ParamValue("git_nombre_url", repositorio.getGit_nombre_url(), JDBCType.VARCHAR),
+                    new ParamValue("es_activo", repositorio.getEs_activo(), JDBCType.INTEGER),
+                    new ParamValue("id_token", repositorio.getId_token(), JDBCType.INTEGER));
+            try(Connection conn = Database()) {
+                boolean executable = UpdateQuery(conn, query, valores);
+                return executable;
+            } catch (Exception ex) {
+                System.out.println("Error" + query);
+                System.out.println(ex.getMessage());
+                System.out.println(ex.getLocalizedMessage());
+                ex.printStackTrace();
+            }
+            return false;
+        });
     }
 
 }
