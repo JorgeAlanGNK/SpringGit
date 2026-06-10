@@ -27,8 +27,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             GitToken temp = null;
             String query = "SELECT id_token, git_token, fecha_caducidad, url_repo, seleccionar_token, organizacion FROM GitRepositorios WHERE git_token = ?";
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = connectionBuilder.SendProperties(conn, query,
-                            connectionBuilder.FormatoColumnas(query));
+                    PreparedStatement ps = conn.prepareStatement(query);
                     ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     temp = new GitToken();
@@ -49,15 +48,18 @@ public class ConsultaRepos implements UsuarioGitDB {
 
     @Override
     public CompletableFuture<Boolean> RegistroRepositorio(GitRepositorio repositorio) {
-        String query = "INSERT INTO GitRepositorios" +
-                "(git_nombre_local, git_nombre_url, es_activo, id_token, sesion_activa)" +
-                "VALUES(?, ?, ?, ?, 1);";
+        String query = "INSERT INTO GitRepositorios "
+                + "(git_nombre_local, git_nombre_url, es_activo, id_token, sesion_activa) "
+                + "VALUES(?, ?, ?, ?, 1);";
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = connectionBuilder.SendProperties(conn, query,
-                            connectionBuilder.FormatoColumnas(query))) {
-                boolean hayDatos = ps.executeUpdate() > 0;
-                return hayDatos;
+            try (Connection conn = connectionBuilder.Database(); 
+                    PreparedStatement ps = conn.prepareStatement(query)) {
+                    ps.setString(1, repositorio.getGit_nombre_local());
+                    ps.setString(2, repositorio.getGit_nombre_url());
+                    ps.setInt(3, repositorio.getEs_activo());
+                    ps.setInt(4, repositorio.getId_token());
+                    ps.setInt(5, repositorio.getSesion_activa());
+                return ps.executeUpdate() > 0;
             } catch (Exception e) {
                 connectionBuilder.FormatError(e, query);
             }
@@ -71,7 +73,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             String consultas = "SELECT COUNT(id_repositorio) AS cantidad_repositorio FROM GitRepositorios WHERE sesion_activa = 1";
             Integer cantidad = null;
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = connectionBuilder.SendProperties(conn, consultas, null);
+                    PreparedStatement ps = conn.prepareStatement(consultas);
                     ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     cantidad = rs.getInt("cantidad_repositorio");
@@ -91,7 +93,7 @@ public class ConsultaRepos implements UsuarioGitDB {
             List<GitRepositorio> resultQuery = Lists.newArrayList();
             String consultas = "SELECT id_repositorio, git_nombre_local, sesion_activa FROM GitRepositorios WHERE sesion_activa = 1";
             try (Connection conn = connectionBuilder.Database();
-                    PreparedStatement ps = connectionBuilder.SendProperties(conn, consultas, connectionBuilder.FormatoColumnas(consultas));
+                    PreparedStatement ps = conn.prepareStatement(consultas);
                     ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     GitRepositorio tempModelo = new GitRepositorio();

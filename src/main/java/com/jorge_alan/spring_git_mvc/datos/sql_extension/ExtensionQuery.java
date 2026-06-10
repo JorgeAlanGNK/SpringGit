@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.jorge_alan.spring_git_mvc.datos.buffers.ConfigurationFactory;
@@ -29,7 +28,9 @@ public class ExtensionQuery {
         return conn;
     }
 
-    public PreparedStatement SendProperties(Connection conn, String query, List<String> props) throws SQLException {
+    //envia los valores para la consulta de este tipo '?'
+    public PreparedStatement SendPropertiesQuery(Connection conn, String query, List<String> props) throws SQLException {
+        Objects.requireNonNull(conn);
         PreparedStatement ps = conn.prepareStatement(query);
         if (!Objects.isNull(props) && props.size() > 0) {
             for (int i = 1; i <= props.size(); i++) {
@@ -39,53 +40,26 @@ public class ExtensionQuery {
         return ps;
     }
 
-    public <T> T GetProperty(T model, ResultSet rs, Class<T> modelClass, String... props)
-            throws Exception {
-        Objects.requireNonNull(modelClass);
-        if (!EsPrimitivo(modelClass)) {
-            T getInstance = modelClass.getDeclaredConstructor().newInstance();
-            while (rs.next()) {
-                for (int i = 0; props.length > 0; i++) {
-                    Field property = getInstance.getClass().getDeclaredField(props[i]);
-                    property.setAccessible(true);
-                    Class<?> typeClass = property.getType();
-                    GetPrimitive(rs, typeClass, props[i], property);
-                }
-            }
-            return getInstance;
-        }
-        return (T) model;
-    }
+    //obtiene las columnas
 
-    public <T> List<T> GetProperties(ResultSet rs, Class<T> modelClass, String... props)
+    public <T> List<T> GetProperties(ResultSet rs, Class<T> modelClass, List<String> props)
             throws Exception {
         Objects.requireNonNull(modelClass);
         if (!EsPrimitivo(modelClass)) {
             List<T> tempArr = Lists.newArrayList();
             while (rs.next()) {
                 T getInstance = modelClass.getDeclaredConstructor().newInstance();
-                for (int i = 0; props.length > 0; i++) {
-                    Field property = getInstance.getClass().getDeclaredField(props[i]);
+                for (int i = 0; props.size() > 0; i++) {
+                    Field property = getInstance.getClass().getDeclaredField(props.get(i));
                     property.setAccessible(true);
                     Class<?> typeClass = property.getType();
-                    GetPrimitive(rs, typeClass, props[i], property);
+                    GetPrimitive(rs, typeClass, props.get(i), property);
                 }
                 tempArr.add(getInstance);
             }
             return tempArr;
         }
         return Lists.newArrayList();
-    }
-
-    public List<String> FormatoColumnas(String query) {
-        List<String> data = Lists.newArrayList(query.substring(query.indexOf("SELECT"), query.lastIndexOf("FROM"))
-                        .replace("SELECT", "")
-                        .trim()
-                        .split(","))
-                        .stream()
-                        .map(String::trim)
-                        .collect(Collectors.toList());
-        return data;
     }
 
     public void FormatError(Throwable ex, String query) {
