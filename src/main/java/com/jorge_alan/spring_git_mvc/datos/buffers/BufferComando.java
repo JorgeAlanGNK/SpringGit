@@ -9,13 +9,13 @@ import java.util.Set;
 
 public interface BufferComando {
 
-    Set<RamaModelo> LecturaRama(String streamResult);
+    Set<RamaModelo> LecturaRama(String streamResult) throws IOException, InterruptedException;
 
-    List<StashModelo> StashLectura(String streamResult);
+    List<StashModelo> StashLectura(String streamResult) throws IOException, InterruptedException;
 
-    boolean SwitchCambio(String streamResult, String branchSwitch);
-
-    List<RamaModelo> RamasRemotas(String streamResult);
-
-    RemotoModelo RemotosUrl(String streamResult);
+    boolean SwitchCambio(String streamResult, String branchSwitch) throws IOException, InterruptedException;
+    
+    List<RamaModelo> RamasRemotas (String streamResult) throws IOException, InterruptedException;
+    
+    RemotoModelo RemotosUrl(String streamResult) throws IOException, InterruptedException;
 }

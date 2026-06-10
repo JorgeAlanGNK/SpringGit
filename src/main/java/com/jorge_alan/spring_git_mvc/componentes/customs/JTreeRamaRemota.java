@@ -3,10 +3,9 @@ package com.jorge_alan.spring_git_mvc.componentes.customs;
 import com.google.common.collect.Queues;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
-import com.jorge_alan.spring_git_mvc.componentes.extension.EstructuraNavegacion;
-import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
-import com.jorge_alan.spring_git_mvc.componentes.extension.IconoExtensionImpl;
-import com.jorge_alan.spring_git_mvc.componentes.extension.IconoExtension;
+import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
+import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtension;
+import com.jorge_alan.spring_git_mvc.modelos.extensiones.CapaExtension.IconoExtensionImpl;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,6 +21,7 @@ public class JTreeRamaRemota extends JTree {
     
     private Set<RamaModelo> ramaRemotos;
     private final IconoExtension extIcono = new IconoExtensionImpl();
+    private EstadoSituacion situacionUsuario;
     private final EstructuraNavegacion navegacion = new EstructuraNavegacion();
     
     public JTreeRamaRemota() {
@@ -58,9 +58,14 @@ public class JTreeRamaRemota extends JTree {
     public Set<RamaModelo> getRamaRemotos() {
         return ramaRemotos;
     }
+    
+    public EstadoSituacion getSituacionUsuario() {
+        return situacionUsuario;
+    }
 
-    public void setRamaRemotos(Set<RamaModelo> ramaRemotos) {
+    public void setRamaRemotos(Set<RamaModelo> ramaRemotos, EstadoSituacion situacionUsuario) {
         this.ramaRemotos = ramaRemotos;
+        this.situacionUsuario = situacionUsuario;
         RellenarRemotos();
     }
 

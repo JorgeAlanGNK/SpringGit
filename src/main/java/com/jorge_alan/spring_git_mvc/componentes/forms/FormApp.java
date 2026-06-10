@@ -9,7 +9,8 @@ import javax.swing.JOptionPane;
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 import com.jorge_alan.spring_git_mvc.datos.capaDatos.GitVisualizacion;
-import com.jorge_alan.spring_git_mvc.datos.sql_extension.DaoGitUsuario;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
+import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import javax.swing.JLayeredPane;
 
@@ -45,8 +46,7 @@ public class FormApp extends javax.swing.JFrame {
     private static IniciadorUsuario CargaInicio() {
         if (manejoUsuario == null) {
             return new IniciadorUsuario(
-                    new GitVisualizacion(),
-                    new DaoGitUsuario());
+                    new GitVisualizacion());
         }
         return manejoUsuario;
     }
@@ -90,7 +90,7 @@ public class FormApp extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         variedadLayoutPanel = new javax.swing.JLayeredPane();
@@ -102,7 +102,6 @@ public class FormApp extends javax.swing.JFrame {
         SeccionRama = new javax.swing.JMenu();
         itemCrearRepositorio = new javax.swing.JMenuItem();
         itemSeleccionarRepositorio = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         SeccionConfiguración = new javax.swing.JMenu();
         ItemToken = new javax.swing.JMenuItem();
         ItemUrlRemoto = new javax.swing.JMenuItem();
@@ -127,12 +126,9 @@ public class FormApp extends javax.swing.JFrame {
         itemCrearRepositorio.addActionListener(this::itemCrearRepositorioActionPerformed);
         SeccionRama.add(itemCrearRepositorio);
 
-        itemSeleccionarRepositorio.setText("Abrir Repositorio");
+        itemSeleccionarRepositorio.setText("Agregar Repositorio");
         itemSeleccionarRepositorio.addActionListener(this::itemSeleccionarRepositorioActionPerformed);
         SeccionRama.add(itemSeleccionarRepositorio);
-
-        jMenuItem1.setText("Ingresar un Repositorio");
-        SeccionRama.add(jMenuItem1);
 
         accesoOperacion.add(SeccionRama);
 
@@ -200,7 +196,7 @@ public class FormApp extends javax.swing.JFrame {
         }
     }
 
-    // Propiedades de solo componentes
+    //Propiedades de solo componentes
     public com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom getTabbedPaneCustom1() {
         return tabbedPaneCustom1;
     }
@@ -221,7 +217,6 @@ public class FormApp extends javax.swing.JFrame {
     private javax.swing.JMenuBar accesoOperacion;
     private javax.swing.JMenuItem itemCrearRepositorio;
     private javax.swing.JMenuItem itemSeleccionarRepositorio;
-    private javax.swing.JMenuItem jMenuItem1;
     private com.jorge_alan.spring_git_mvc.componentes.forms.MenuSelection menuNoRepoFound;
     private com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu panelContenedorMenu1;
     private com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom tabbedPaneCustom1;

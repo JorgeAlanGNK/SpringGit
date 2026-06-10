@@ -1,6 +1,6 @@
 package com.jorge_alan.spring_git_mvc.componentes.navegacion;
 
-public final class ConstanteIcono {
+public class ConstanteIcono {
 
     private ConstanteIcono() throws InterruptedException {
         throw new InterruptedException("no se puede instanciar " + this.getClass().getName());
@@ -18,7 +18,4 @@ public final class ConstanteIcono {
     public static final String ICONO_GIT_LOGO = "static/github-color-svgrepo-com.svg";
     public static final String ICONO_STASH_LOGO_ITEM = "static/json-svgrepo-com.svg";
     public static final String ICONO_AGREGAR_TAB = "static/plus-1469-svgrepo-com.svg";
-    public static final String ICONO_INFORMATION_TEXT_OBLIGATORY = "static/icons8-information.svg";
-    public static final String ICONO_INFORMATION_TEXT_ERROR = "static/icons8-cross.svg";
-    public static final String ICONO_INFORMATION_TEXT_SUCCESS = "static/icons8-checked.svg";
 }

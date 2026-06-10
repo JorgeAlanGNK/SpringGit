@@ -1,7 +1,7 @@
 package com.jorge_alan.spring_git_mvc.componentes.customs;
 
 import javax.swing.JTabbedPane;
-import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
 

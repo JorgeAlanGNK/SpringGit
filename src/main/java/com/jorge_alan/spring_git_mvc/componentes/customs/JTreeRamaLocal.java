@@ -3,8 +3,8 @@ package com.jorge_alan.spring_git_mvc.componentes.customs;
 import com.google.common.collect.Queues;
 import com.jorge_alan.spring_git_mvc.modelos.CapaModelo.RamaModelo;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
-import com.jorge_alan.spring_git_mvc.componentes.extension.EstructuraNavegacion;
-import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
+import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.EstructuraNavegacion;
+import com.jorge_alan.spring_git_mvc.modelos.EstructuraComponente.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoSituacion;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,6 +21,7 @@ public class JTreeRamaLocal extends JTree {
 
     private Set<RamaModelo> ramaLocal;
     private List<String> carpetas;
+    private EstadoSituacion situacionUsuario;
     private final EstructuraNavegacion navegacion = new EstructuraNavegacion();
     private ImagenEstatica imagenes = new ImagenEstatica();
     
@@ -57,7 +58,7 @@ public class JTreeRamaLocal extends JTree {
         return ramaLocal;
     }
 
-    public void setRamaLocal(Set<RamaModelo> ramaLocal) {
+    public void setRamaLocal(Set<RamaModelo> ramaLocal, EstadoSituacion response) {
         this.ramaLocal = ramaLocal;
         RellenarRamas();
     }
