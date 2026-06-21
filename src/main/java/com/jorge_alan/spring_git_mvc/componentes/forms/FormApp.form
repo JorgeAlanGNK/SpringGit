@@ -99,7 +99,7 @@
       <SubComponents>
         <Component class="com.jorge_alan.spring_git_mvc.componentes.forms.MenuSelection" name="menuNoRepoFound">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="menuNoRepoFound.setNavegador(navegador);"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="menuNoRepoFound.setNavegador(moduloSesion.getNavegador());"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">

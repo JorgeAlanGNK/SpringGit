@@ -10,13 +10,6 @@ public class MenuSelection extends javax.swing.JPanel {
         initComponents();
     }
 
-    //metodos privados
-    private boolean VerificarRuta(String tempRuta) {
-        //aqui se encarga de obtener las rutas ya registradas de la base de datos local
-        ControladorFormulario formulario = navegador.getControlador();
-        return formulario.VerificarRemoto(tempRuta).join();
-    }
-
     //propiedades
     public void setNavegador(ConstruccionNavegador navegador) {
         this.navegador = navegador;
@@ -86,8 +79,7 @@ public class MenuSelection extends javax.swing.JPanel {
 
     private void btnEscogerRepositorio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEscogerRepositorio1ActionPerformed
         //se necesita generar un archivo para escoger un repositorio
-        String ruta = navegador.RutaFisica();
-        navegador.AgregarPanelTab(navegador.RutaFisica(), VerificarRuta(ruta));
+        
     }//GEN-LAST:event_btnEscogerRepositorio1ActionPerformed
 
 

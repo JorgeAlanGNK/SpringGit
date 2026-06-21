@@ -56,9 +56,8 @@ public class ConsultaRepos implements UsuarioGitDB {
                     PreparedStatement ps = conn.prepareStatement(query)) {
                     ps.setString(1, repositorio.getGit_nombre_local());
                     ps.setString(2, repositorio.getGit_nombre_url());
-                    ps.setInt(3, repositorio.getEs_activo());
-                    ps.setInt(4, repositorio.getId_token());
-                    ps.setInt(5, repositorio.getSesion_activa());
+                    ps.setObject(3, repositorio.getEs_activo());
+                    ps.setObject(4, repositorio.getId_token());
                 return ps.executeUpdate() > 0;
             } catch (Exception e) {
                 connectionBuilder.FormatError(e, query);

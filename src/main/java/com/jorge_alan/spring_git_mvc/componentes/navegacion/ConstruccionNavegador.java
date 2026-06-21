@@ -21,29 +21,29 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.jorge_alan.spring_git_mvc.componentes.customs.TabbedPaneCustom;
-import com.jorge_alan.spring_git_mvc.componentes.forms.ControladorFormulario;
 import com.jorge_alan.spring_git_mvc.componentes.forms.FormApp;
 import com.jorge_alan.spring_git_mvc.componentes.forms.PanelContenedorMenu;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
+import com.jorge_alan.spring_git_mvc.modelos.modules.ModulosUsuario;
 import com.jorge_alan.spring_git_mvc.modelos.vistasModelos.EstadoEnum;
+import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 
 public class ConstruccionNavegador {
 
     private FormApp app;
     private List<PanelContenedorMenu> panelNavegador;
-    private Map<String, ModeloRepositorio> modelosRepositorios;// permite enviar un nuevo cambio al controlador
-    private int cantidadPaneles;
     private Set<String> rutas;
-    private ControladorFormulario controlador;// no se puede instanciar, intentar cargar el controlador desde el formApp
     // verificar si esta mostrando un PanelContenedorMenu
     private boolean muestraRepos;
 
-    public ConstruccionNavegador(FormApp app) {
+    //comenzamos a cargar los modulos para realizar operaciones
+    private static ModulosUsuario cargaModulo;
+
+    public ConstruccionNavegador(FormApp app, ModulosUsuario cargaModulo) {
+        ConstruccionNavegador.cargaModulo = cargaModulo;
         this.app = app;
         this.rutas = Sets.newHashSet();
-        this.modelosRepositorios = Maps.newHashMap();
         this.panelNavegador = Lists.newArrayList();
-        this.cantidadPaneles = 0;
     }
 
     // Operaciones para un navegador principal
@@ -95,34 +95,29 @@ public class ConstruccionNavegador {
             String tempEnlace = nuevoEnlace.substring(separatorFinal).replace("\\", "");
             ModeloRepositorio modelo = new ModeloRepositorio();
             modelo.setRepositorioActual(nuevoEnlace);
-            modelo.setRepositorioActual(nuevoEnlace);
+            IniciadorUsuario moduloActual = cargaModulo.getManejoUsuario();
             // se comienza a cargar el panel del menu principal
-            this.modelosRepositorios.put(tempEnlace, modelo);
-            this.controlador.setModelo(modelo);
             rutas.add(nuevoEnlace);
+            //prepararmos los datos para el panel y el cambio del tabbedPane
             PanelContenedorMenu nuevoPanel = new PanelContenedorMenu();
-            nuevoPanel.LoadAsync(this.controlador).thenAccept((response) -> {// los metodos asincronos deben de devolver
-                // el valor
+            nuevoPanel.setModuloIniciadorUsuario(moduloActual);
+            nuevoPanel.setResultadoModelo(modelo);
+            nuevoPanel.LoadComponentes(true).thenAcceptAsync((response) -> {
                 SwingUtilities.invokeLater(() -> {
                     if (response.getSituacion().getTipoEnum() == EstadoEnum.OK) {
-                        // cambiar y cargar el repositorio actual
+                        this.panelNavegador.add(nuevoPanel);
+                        this.app.getTabbedPaneCustom1().addTab(tempEnlace, nuevoPanel);
+                        //se carga el modelo
                         nuevoPanel.getRamaLocalArea().setRamaLocal(response.getRamasLocales());
                         nuevoPanel.getRamaRemotoOrigin().setRamaRemotos(response.getRamasRemotas());
                         nuevoPanel.getStashAreaPanel().setStashModelo(response.getStashes());
-                        nuevoPanel.setResultadoModelo(response);
-                        this.panelNavegador.add(nuevoPanel);
-                        this.cantidadPaneles = panelNavegador.size();
-                        this.app.getTabbedPaneCustom1().addTab(tempEnlace, nuevoPanel);
-                        // se cambia el panel
+                        //cambiamos de layout del menu, y hacemos la API CardLayout
                         CardLayout cardLayout = (CardLayout) app.getVariedadLayoutPanel().getLayout();
                         cardLayout.show(app.getVariedadLayoutPanel(), CardConstante.CARD_TABBED_PANE_CUSTOM);
                         muestraRepos = app.getTabbedPaneCustom1().getTabCount() > 0;
-                        // ingresamos a la base de datos
                         if (insertarRepositorio) {
-                            ObtenerPanelSeleccionado(!response.getRamasRemotas().isEmpty());
+                            
                         }
-                        app.repaint();
-                        app.revalidate();
                     } else {
                         muestraRepos = false;
                         JOptionPane.showMessageDialog(app, String.format(
@@ -130,8 +125,11 @@ public class ConstruccionNavegador {
                                 nuevoEnlace),
                                 "Repositorio GIT no valido", JOptionPane.ERROR_MESSAGE);
                     }
+                    app.repaint();
+                    app.revalidate();
                 });
-            });// aqui obtiene la informacion del repositorio
+            });
+            ModeloRepositorio response = nuevoPanel.getResultadoModelo();
         }
     }
 
@@ -147,7 +145,6 @@ public class ConstruccionNavegador {
             if (menuRemover.getResultadoModelo().getRepositorioActual() == buscarRepo) {
                 tabShow.remove(menuRemover);
                 panelNavegador.remove(menuRemover);
-                cantidadPaneles = panelNavegador.size();
             }
         }
         app.repaint();
@@ -167,54 +164,45 @@ public class ConstruccionNavegador {
         }
     }
 
-    public void ObtenerPanelSeleccionado(boolean activarRemoto) {
-        // se puede verificar si el repositorio tiene una lista de repositorios
-        // constantemente se va a estar verficando la URL en caso de error
-        if (muestraRepos) {
-            int index = app.getTabbedPaneCustom1().getSelectedIndex();
-            PanelContenedorMenu menu_actual = (PanelContenedorMenu) app.getTabbedPaneCustom1().getComponentAt(index);
-            ModeloRepositorio repo = menu_actual.getResultadoModelo();
-            Consumer<Boolean> execute = (resultado) -> {
-                if (resultado) {
-                    repo.setActivo(true);
-                } else {
-                    repo.setActivo(false);
-                }
-            };
-            if (repo.getSituacion().getTipoEnum() == EstadoEnum.OK) {
-                menu_actual.getControlador().IngresarRepositorio(repo.getRepositorioActual(), activarRemoto)
-                        .thenAccept(execute);
+    public CompletableFuture<List<ModeloRepositorio>> AbrirRepositorios() {
+        IniciadorUsuario modulo_navegacion = cargaModulo.getManejoUsuario();
+        //detectamos los repositorios que se quedaron abiertos
+        return modulo_navegacion.AperturaAplicativo().thenCompose(repositorios -> {
+            if (repositorios.isEmpty()) {
+                return CompletableFuture.completedFuture(Lists.newArrayList());
             }
-        } else {
-            JOptionPane.showMessageDialog(app,
-                    "No hay repositorios para ingresar, favor de seleccionar uno o generar uno nuevo",
-                    "No hay repositorios", JOptionPane.INFORMATION_MESSAGE);
-        }
+            List<CompletableFuture<ModeloRepositorio>> futuros = repositorios.stream()
+                    .map(cadena -> {
+                        modulo_navegacion.EnviarRepositorio(cadena);
+                        return modulo_navegacion.ObtenerTareaPrincipal(true);
+                    })
+                    .collect(Collectors.toList());
+            CompletableFuture<Integer> promesaTamano = new CompletableFuture<>();
+            return CompletableFuture.allOf(futuros.toArray(CompletableFuture[]::new))
+                    .thenApply(v -> {
+                        return futuros.stream().map(CompletableFuture::join).collect(Collectors.toList());
+                    })
+                    .thenApplyAsync((resultados) -> {
+                        List<ModeloRepositorio> listaRepositorios = Lists.newArrayList();
+                        for (ModeloRepositorio resultado : resultados) {
+                            PanelContenedorMenu menu = new PanelContenedorMenu();
+                            menu.setResultadoModelo(resultado);
+                            listaRepositorios.add(resultado);
+                            menu.LoadComponentes(false);
+                            panelNavegador.add(menu);
+                            app.getTabbedPaneCustom1().add(menu);
+                        }
+                        app.repaint();
+                        app.revalidate();
+                        // 3. Retornamos el tamaño real ya actualizado
+                        return listaRepositorios;
+                    }, SwingUtilities::invokeLater);
+        });
     }
 
     // Propiedades
-    public int getCantidadPaneles() {
-        return cantidadPaneles;
-    }
-
     public List<PanelContenedorMenu> ListarPaneles() {
         return panelNavegador;
-    }
-
-    public ControladorFormulario getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(ControladorFormulario controlador) {
-        this.controlador = controlador;
-    }
-
-    public List<String> AbrirRepositorios() {
-        CompletableFuture<List<String>> tarea = controlador.InicioRepositoriosAbiertos();
-        Function<List<String>, List<String>> transformador = (repositorios) -> {
-            return repositorios;
-        };
-        return tarea.thenApply(transformador).join();
     }
 
     private static final class CardConstante {

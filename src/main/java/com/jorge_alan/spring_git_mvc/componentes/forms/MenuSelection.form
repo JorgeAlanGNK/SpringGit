@@ -43,10 +43,8 @@
                   <EmptySpace pref="86" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="btnToken" pref="223" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="btnEscogerRepositorio1" pref="223" max="32767" attributes="0"/>
-                          <Component id="btnGemerarRepositoro" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="btnEscogerRepositorio1" alignment="0" pref="223" max="32767" attributes="0"/>
+                      <Component id="btnGemerarRepositoro" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="84" max="32767" attributes="0"/>
               </Group>

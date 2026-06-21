@@ -10,19 +10,22 @@ import javax.swing.JOptionPane;
 
 import com.google.common.base.Strings;
 import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstruccionNavegador;
-import com.jorge_alan.spring_git_mvc.modelos.modules.ModuloInicioUsuario;
+import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
+import com.jorge_alan.spring_git_mvc.modelos.modules.ModulosUsuario;
 
 public class FormApp extends javax.swing.JFrame {
 
     private static Dimension winDim = Toolkit.getDefaultToolkit().getScreenSize();
     private static java.util.logging.Logger logger;
-    private ModuloInicioUsuario moduloSesion;
+    private ModulosUsuario moduloSesion;
+    private static ConstruccionNavegador navegador;
     private boolean validarOperaciones;
 
     public FormApp() {
+        moduloSesion = new ModulosUsuario(this, navegador);
+        navegador = new ConstruccionNavegador(this, moduloSesion);
         winDim = Toolkit.getDefaultToolkit().getScreenSize();
         logger = java.util.logging.Logger.getLogger(FormApp.class.getName());
-        moduloSesion = new ModuloInicioUsuario(this);
         setVisible(true);
         LookAndFeel();
         initComponents();
@@ -36,8 +39,6 @@ public class FormApp extends javax.swing.JFrame {
         repaint();
         // comenzar a tomar el primer repositorio
         String ruta = null;
-        ConstruccionNavegador navegador = moduloSesion.getNavegador();
-        navegador.setControlador(moduloSesion.getControladorForm());
         if (!navegador.ComprobacionGITVersion()) {// verificamos si tiene GIT instalado
             // en caso de no tenerlo no podra realizar otra operacion
             // ansible ayuda a instalar este componente
@@ -50,15 +51,13 @@ public class FormApp extends javax.swing.JFrame {
             validarOperaciones = true;
         }
         if (validarOperaciones) {
-            boolean hayNavegaciones = navegador.AbrirRepositorios().size() > 0;
+            List<ModeloRepositorio> repoResponse = navegador.AbrirRepositorios().join();
+            boolean hayNavegaciones = repoResponse.size() > 0;
             // apertura de sesiones, si existen activos, se abriran solo los activos, sino,
             // puede escoger el repositorio que desea verificiar, para volver activarla
             if (hayNavegaciones) {
-                // todos los paneles se encuentran agregados, no es necesario insertarlos
-                // nuevamente
-                List<String> repositorios_locales = navegador.AbrirRepositorios();
-                for (String repositorio_local : repositorios_locales) {
-                    navegador.AgregarPanelTab(repositorio_local, false);
+                for (ModeloRepositorio repositorio_local : repoResponse) {
+                    navegador.AgregarPanelTab(repositorio_local.getRepositorioActual(), false);
                 }
             } else {
                 //se agrega un nuevo repositorio, en caso de no tener sesiones abiertas
@@ -71,7 +70,6 @@ public class FormApp extends javax.swing.JFrame {
                 }
             }
         }
-        navegador.setControlador(moduloSesion.getControladorForm());
         repaint();
         revalidate();
     }
@@ -85,7 +83,7 @@ public class FormApp extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         variedadLayoutPanel = new javax.swing.JLayeredPane();
@@ -149,12 +147,8 @@ public class FormApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ItemTokenActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ItemTokenActionPerformed
-        moduloSesion.getControladorForm().VerificarRemoto().thenAccept(result -> {
-            ModalTokenUrl modalToken = new ModalTokenUrl(this, true);
-            boolean resultado = result;
-            // modalToken.setActivarUrlRemoto(vistaRepo.getFormRepositorio().isActivo());
-            CenterInfoModal(modalToken);
-        });
+        ModalTokenUrl modalToken = new ModalTokenUrl(this, true);
+        CenterInfoModal(modalToken);
     }// GEN-LAST:event_ItemTokenActionPerformed
 
     private void ItemUrlRemotoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ItemUrlRemotoActionPerformed

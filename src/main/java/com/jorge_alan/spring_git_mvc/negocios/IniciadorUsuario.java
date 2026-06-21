@@ -156,7 +156,7 @@ public class IniciadorUsuario extends ActualizadorMenu {
             error.printStackTrace();
             return false;
         };
-        Function<Set<RemotoModelo>, CompletableFuture<Boolean>> execute = (listaRemoto) -> {
+        Function<Set<RemotoModelo>, CompletableFuture<Boolean>> taskInsercionUsuario = (listaRemoto) -> {
             if (listaRemoto.isEmpty()) {
                 return CompletableFuture.completedFuture(false);
             }
@@ -164,7 +164,7 @@ public class IniciadorUsuario extends ActualizadorMenu {
             return operacion.IngresarRepoLocal(dir, lista.get(0).getFetch(), 1, Integer.getInteger(token));
         };
         if (hayRemoto) {
-            return verificarRemoto.get().thenCompose(execute).exceptionally(callErrorFunc);
+            return verificarRemoto.get().thenCompose(taskInsercionUsuario).exceptionally(callErrorFunc);
         }
         return operacion.IngresarRepoLocal(dir, null, 0, Integer.getInteger(token)).exceptionally(callErrorFunc);
     }

@@ -5,9 +5,10 @@ import com.jorge_alan.spring_git_mvc.componentes.navegacion.ConstanteIcono;
 
 import com.jorge_alan.spring_git_mvc.componentes.extension.ImagenEstatica;
 import com.jorge_alan.spring_git_mvc.modelos.datosModelos.ModeloRepositorio;
+import com.jorge_alan.spring_git_mvc.negocios.IniciadorUsuario;
 import java.awt.Dimension;
-import javax.swing.JTextField;
 import java.util.concurrent.CompletableFuture;
+import javax.swing.JTextField;
 
 public class PanelContenedorMenu extends javax.swing.JPanel {
 
@@ -17,19 +18,12 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     private String RAMA_LOCAL_TEXTO;
     private String RAMA_STASH_TEXTO;
     private String RAMA_REMOTO_TEXTO;
-    private ControladorFormulario controlador;
     private ModeloRepositorio resultadoModelo;
-    private String idRepoNombre;
     private ImagenEstatica extImagenes = new ImagenEstatica();
+    private IniciadorUsuario moduloIniciadorUsuario;
 
     public PanelContenedorMenu() {
         initComponents();
-    }
-
-    public CompletableFuture<ModeloRepositorio> LoadAsync(ControladorFormulario controlador) {
-        this.controlador = controlador;
-        this.idRepoNombre = controlador.getModelo().getRepositorioActual();
-        return controlador.ProcesoInicioGit(false);
     }
 
     private void TogglePanel(javax.swing.JPanel toggleCmp, javax.swing.JPanel parent, javax.swing.JButton btnAction,
@@ -59,7 +53,6 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -496,12 +489,33 @@ public class PanelContenedorMenu extends javax.swing.JPanel {
         return stashAreaPanel;
     }
 
-    public String getIdRepoNombre() {// ayuda a identificar el panel con el repositorio
-        return idRepoNombre;
+    //borrar la clase IniciadorModulo
+    public void setModuloIniciadorUsuario(IniciadorUsuario moduloIniciadorUsuario) {
+        this.moduloIniciadorUsuario = moduloIniciadorUsuario;
     }
 
-    public ControladorFormulario getControlador() {
-        return controlador;
+    public CompletableFuture<ModeloRepositorio> LoadComponentes(boolean activarTareaActual) {
+        ModeloRepositorio temp = this.resultadoModelo;
+        try {
+            if (!activarTareaActual) {
+                //solo para automatizar repositorios que ya estan cargados
+                ramaLocalArea.setRamaLocal(temp.getRamasLocales());
+                ramaRemotoOrigin.setRamaRemotos(temp.getRamasRemotas());
+                stashAreaPanel.setStashModelo(temp.getStashes());
+                return CompletableFuture.completedFuture(temp);
+            } else {
+                //para tareas a automatizar por repositorio o para inicios de sesion
+                moduloIniciadorUsuario.EnviarRepositorio(temp.getRepositorioActual());
+                boolean hayRemoto = temp.getRemotosUrl().isEmpty();//saber si hay remotos o no
+                return moduloIniciadorUsuario.ObtenerTareaPrincipal(!hayRemoto)
+                        .thenApply((repo) -> this.resultadoModelo = repo);
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println(e.getMessage());
+            System.out.println(String.format("Error en el formato del repositorio"));
+            return CompletableFuture.completedFuture(temp);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
